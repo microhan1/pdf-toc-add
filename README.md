@@ -4,7 +4,7 @@
 
 **[⬇ Download pdf_toc_add.exe (Windows)](https://github.com/microhan1/pdf-toc-add/releases/latest)** · No installation needed
 
-![screenshot](docs/screenshot_ko.png)
+![screenshot](assets/screenshot_ko.png)
 
 ---
 
