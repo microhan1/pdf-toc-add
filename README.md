@@ -2,6 +2,10 @@
 
 [한국어](#한국어) · [English](#english) · [中文](#中文)
 
+**[⬇ Download pdf_toc_add.exe (Windows)](https://github.com/microhan1/pdf-toc-add/releases/latest)** · No installation needed
+
+![screenshot](docs/screenshot_ko.png)
+
 ---
 
 ## 한국어
@@ -12,7 +16,7 @@
 
 ### exe 로 쓰기 (설치 불필요)
 
-`dist/pdf_toc_add.exe` 를 더블클릭하면 창이 뜹니다.
+[Releases](https://github.com/microhan1/pdf-toc-add/releases/latest) 에서 `pdf_toc_add.exe` 를 내려받아 더블클릭하면 창이 뜹니다. 서명이 없는 exe 라 처음에 Windows SmartScreen 경고가 뜨면 "추가 정보 → 실행" 을 누르세요.
 
 - PDF 는 창에 **끌어다 놓거나** 찾아보기로 고릅니다. exe 아이콘 위에 PDF 를 놓아도 됩니다.
 - 목차는 **텍스트 파일을 끌어다 놓거나** 열기 버튼으로 불러오고, 입력칸에 **직접 타이핑**해도 됩니다.
@@ -59,6 +63,8 @@ python -m pytest tests -q
 python -m PyInstaller --onefile --windowed --name pdf_toc_add pdf_toc_add.py
 ```
 
+빌드된 exe 는 저장소에 넣지 않고 GitHub Releases 에 올립니다.
+
 문자열은 [i18n.py](i18n.py) 한 곳에 모여 있습니다. 언어를 추가하려면 `STRINGS` 에 표를 하나 더 넣고 `LANGS`, `LANG_NAMES` 에 등록하면 됩니다.
 
 ---
@@ -71,7 +77,7 @@ The interface and messages are available in Korean, English and Chinese.
 
 ### Using the exe (no install)
 
-Double-click `dist/pdf_toc_add.exe`.
+Download `pdf_toc_add.exe` from [Releases](https://github.com/microhan1/pdf-toc-add/releases/latest) and double-click it. The exe is unsigned, so if Windows SmartScreen appears the first time, click "More info → Run anyway".
 
 - **Drag and drop** the PDF onto the window, or use Browse. Dropping a PDF onto the exe icon also works.
 - **Drop a text file** for the table of contents, open one with the button, or **type it directly**.
@@ -130,7 +136,7 @@ All strings live in [i18n.py](i18n.py). To add a language, add a table to `STRIN
 
 ### 使用 exe（无需安装）
 
-双击 `dist/pdf_toc_add.exe`。
+从 [Releases](https://github.com/microhan1/pdf-toc-add/releases/latest) 下载 `pdf_toc_add.exe` 并双击运行。exe 未签名，首次运行若出现 Windows SmartScreen 提示，请点击“更多信息 → 仍要运行”。
 
 - 把 PDF **拖入窗口**或点“浏览”。把 PDF 拖到 exe 图标上也可以。
 - 目录可以**拖入文本文件**、用按钮打开，或**直接输入**。

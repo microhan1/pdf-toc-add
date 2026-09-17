@@ -3,3 +3,4 @@ dist/
 *.spec
 __pycache__/
 .pytest_cache/
+blog_post_ko.md
