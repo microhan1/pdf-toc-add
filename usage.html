@@ -6,49 +6,88 @@
 <title>PDF TOC Bookmarks</title>
 <style>
   :root {
-    --bg: #ffffff; --fg: #1f2328; --muted: #57606a; --line: #d0d7de;
-    --code-bg: #f6f8fa; --accent: #0969da; --warn-bg: #fff8c5; --warn-line: #d4a72c;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --line: #30363d;
-      --code-bg: #161b22; --accent: #58a6ff; --warn-bg: #3b2e00; --warn-line: #9e6a03;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --line: #30363d;
-    --code-bg: #161b22; --accent: #58a6ff; --warn-bg: #3b2e00; --warn-line: #9e6a03;
+    --bg: #f4f7fb; --card: #ffffff; --fg: #1f2937; --muted: #6b7280; --line: #e5e9f0;
+    --code-bg: #f6f8fb; --accent: #2563eb; --accent-soft: #eaf1fe; --accent-dark: #1d4ed8;
+    --ok-bg: #ecfdf3; --ok-line: #86efac; --warn-bg: #fff8e6; --warn-line: #f5c451;
+    --radius: 12px; --shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 8px 24px rgba(16, 24, 40, .06);
   }
   * { box-sizing: border-box; }
+  html { background: var(--bg); }
   body {
-    margin: 0; padding: 24px 16px 64px; background: var(--bg); color: var(--fg);
+    margin: 0; padding: 32px 16px 72px; background: var(--bg); color: var(--fg);
     font-family: "Malgun Gothic", "Microsoft YaHei", "PingFang SC", "Apple SD Gothic Neo", "Noto Sans KR", "Noto Sans SC", system-ui, sans-serif;
-    font-size: 16px; line-height: 1.7;
+    font-size: 16px; line-height: 1.75;
   }
-  main { max-width: 760px; margin: 0 auto; }
-  h1 { font-size: 1.8em; margin: 0 0 4px; }
-  h2 { font-size: 1.25em; margin: 40px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
-  h3 { font-size: 1.05em; margin: 24px 0 8px; }
-  p.lead { color: var(--muted); margin-top: 0; }
-  code { font-family: Consolas, "D2Coding", monospace; font-size: 0.92em; background: var(--code-bg); padding: 2px 5px; border-radius: 4px; }
-  pre { background: var(--code-bg); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; overflow-x: auto; line-height: 1.5; }
-  pre code { background: none; padding: 0; }
-  ol.steps { padding-left: 22px; }
-  ol.steps li { margin: 10px 0; }
-  table { border-collapse: collapse; width: 100%; margin: 8px 0; }
-  th, td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; }
-  th { background: var(--code-bg); }
-  .note { background: var(--warn-bg); border-left: 4px solid var(--warn-line); padding: 10px 14px; border-radius: 4px; margin: 14px 0; }
-  .tip { color: var(--muted); font-size: 0.93em; }
-  kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 1px 6px; font-size: 0.85em; background: var(--code-bg); }
-  .langbar { display: flex; gap: 6px; justify-content: flex-end; margin-bottom: 18px; }
+  main { max-width: 800px; margin: 0 auto; }
+
+  /* ---- language switcher */
+  .langbar { display: flex; gap: 6px; justify-content: flex-end; margin-bottom: 16px; }
   .langbar button {
-    font: inherit; font-size: 0.9em; padding: 4px 12px; border-radius: 999px; cursor: pointer;
-    border: 1px solid var(--line); background: var(--code-bg); color: var(--fg);
+    font: inherit; font-size: 0.88em; padding: 5px 14px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--card); color: var(--muted); transition: all .15s;
   }
+  .langbar button:hover { border-color: var(--accent); color: var(--accent); }
   .langbar button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
   [data-lang] { display: none; }
   [data-lang].active { display: block; }
+
+  /* ---- hero */
+  .hero {
+    background: linear-gradient(135deg, #2563eb 0%, #4f8cf7 60%, #7fb0ff 100%); color: #fff;
+    border-radius: var(--radius); padding: 36px 36px 32px; box-shadow: var(--shadow); margin-bottom: 24px;
+  }
+  .hero h1 { margin: 0 0 8px; font-size: 2em; line-height: 1.25; color: #fff; }
+  .hero p { margin: 0 0 20px; color: rgba(255,255,255,.88); font-size: 1.05em; max-width: 600px; }
+  .hero .btn {
+    display: inline-block; background: #fff; color: var(--accent-dark); font-weight: 700; text-decoration: none;
+    padding: 10px 20px; border-radius: 999px; box-shadow: 0 2px 6px rgba(0,0,0,.15); transition: transform .1s;
+  }
+  .hero .btn:hover { transform: translateY(-1px); }
+  .hero .sub { display: inline-block; margin-left: 12px; color: rgba(255,255,255,.85); font-size: .92em; }
+
+  /* ---- content card */
+  .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 8px 36px 28px; }
+  h2 { font-size: 1.3em; margin: 40px 0 14px; padding-bottom: 8px; border-bottom: 2px solid var(--accent-soft); color: #111827; }
+  h2:first-of-type { margin-top: 24px; }
+  h3 { font-size: 1.05em; margin: 26px 0 8px; color: #111827; }
+  h2 .num {
+    display: inline-block; width: 28px; height: 28px; line-height: 28px; text-align: center; border-radius: 8px;
+    background: var(--accent); color: #fff; font-size: .8em; margin-right: 10px; vertical-align: 2px;
+  }
+  a { color: var(--accent); }
+  ul { padding-left: 22px; }
+  li { margin: 6px 0; }
+  code { font-family: Consolas, "D2Coding", monospace; font-size: 0.9em; background: var(--accent-soft); color: var(--accent-dark); padding: 2px 6px; border-radius: 5px; }
+  pre { background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; overflow-x: auto; line-height: 1.55; }
+  pre code { background: none; color: var(--fg); padding: 0; }
+  ol.steps { padding-left: 0; list-style: none; counter-reset: step; }
+  ol.steps li {
+    counter-increment: step; position: relative; padding: 12px 16px 12px 56px; margin: 10px 0;
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px;
+  }
+  ol.steps li::before {
+    content: counter(step); position: absolute; left: 16px; top: 12px; width: 28px; height: 28px; line-height: 28px;
+    text-align: center; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 700; font-size: .85em;
+  }
+  ol.steps ul { margin: 6px 0 0; }
+  table { border-collapse: separate; border-spacing: 0; width: 100%; margin: 10px 0 14px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  th, td { padding: 9px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+  tr:last-child td { border-bottom: none; }
+  th { background: var(--accent-soft); color: var(--accent-dark); font-weight: 700; }
+  tbody tr:nth-child(even) td { background: #fafbfd; }
+  .note { background: var(--warn-bg); border-left: 4px solid var(--warn-line); padding: 12px 16px; border-radius: 8px; margin: 16px 0; }
+  .tip { color: var(--muted); font-size: 0.93em; }
+  kbd {
+    border: 1px solid #cbd5e1; border-bottom-width: 2px; border-radius: 6px; padding: 1px 8px; font-size: 0.85em;
+    background: #fff; color: #111827; font-family: inherit;
+  }
+  footer { text-align: center; color: var(--muted); font-size: .88em; margin-top: 28px; }
+  @media (max-width: 600px) {
+    .hero { padding: 26px 20px; }
+    .hero h1 { font-size: 1.6em; }
+    .card { padding: 4px 18px 20px; }
+    .hero .sub { display: block; margin: 10px 0 0; }
+  }
 </style>
 </head>
 <body>
@@ -62,8 +101,12 @@
 
 <!-- ======================================================= 한국어 -->
 <section data-lang="ko">
+<div class="hero">
 <h1>PDF 목차 넣기</h1>
-<p class="lead">스캔한 책 PDF에 북마크(목차)를 넣어서 원하는 장으로 바로 건너뛸 수 있게 해 줍니다.</p>
+<p>스캔한 책 PDF에 북마크(목차)를 넣어서 원하는 장으로 바로 건너뛸 수 있게 해 줍니다.</p>
+<a class="btn" href="https://github.com/microhan1/pdf-toc-add/releases/latest">⬇ pdf_toc_add.exe 내려받기</a><span class="sub">Windows · 설치 불필요 · 무료</span>
+</div>
+<div class="card">
 
 <h2>준비물</h2>
 <ul>
@@ -72,7 +115,7 @@
   <li>목차를 적은 텍스트 파일 (메모장으로 만들면 됩니다). 창에서 직접 타이핑해도 됩니다.</li>
 </ul>
 
-<h2>1. 목차 텍스트 만들기</h2>
+<h2><span class="num">1</span>목차 텍스트 만들기</h2>
 <p>한 줄에 항목 하나씩 <strong>제목, 쪽수</strong> 를 적습니다.</p>
 <pre><code>offset=8
 
@@ -93,7 +136,7 @@
   <li>메모장 기본 인코딩(ANSI/CP949), UTF-8, UTF-16 모두 자동으로 읽습니다.</li>
 </ul>
 
-<h2>2. offset (쪽수 보정) 정하기</h2>
+<h2><span class="num">2</span>offset (쪽수 보정) 정하기</h2>
 <p>스캔 PDF는 표지와 머리말 때문에 <strong>책에 인쇄된 쪽수</strong>와 <strong>PDF 페이지 번호</strong>가 다릅니다.
 PDF 뷰어에서 책의 1쪽이 PDF 몇 페이지에 있는지 확인하고, 그 차이를 offset 으로 넣습니다.</p>
 <table>
@@ -104,7 +147,7 @@ PDF 뷰어에서 책의 1쪽이 PDF 몇 페이지에 있는지 확인하고, 그
 </table>
 <p class="tip">목차 첫 줄에 <code>offset=8</code> 처럼 적어 두면 파일을 열 때 자동으로 채워집니다.</p>
 
-<h2>3. 실행하기</h2>
+<h2><span class="num">3</span>실행하기</h2>
 <p><code>pdf_toc_add.exe</code> 를 더블클릭하면 창이 뜹니다. PDF 를 exe 아이콘 위에 끌어다 놓아도 그 PDF 가 들어간 채로 열립니다. 언어는 오른쪽 위에서 바꿀 수 있고 다음 실행 때도 기억됩니다.</p>
 <ol class="steps">
   <li><strong>PDF</strong> — 창 위쪽 상자에 PDF 를 끌어다 놓습니다. 파일 이름과 페이지 수가 표시됩니다. <kbd>찾아보기…</kbd> 로 골라도 됩니다.</li>
@@ -133,7 +176,7 @@ PDF 뷰어에서 책의 1쪽이 PDF 몇 페이지에 있는지 확인하고, 그
   <tr><td>출력 파일이 다른 프로그램에서 열려 있음</td><td>오류. 닫고 다시 시도하라고 안내</td></tr>
 </table>
 
-<h2>4. 명령 프롬프트로 실행하기</h2>
+<h2><span class="num">4</span>명령 프롬프트로 실행하기</h2>
 <p>여러 권을 한꺼번에 처리하려면 Python 스크립트를 쓰세요 (<code>pip install pypdf</code> 필요).</p>
 <pre><code>python pdf_toc_add.py 책.pdf 목차.txt
 python pdf_toc_add.py 책.pdf 목차.txt --offset 8 -o 결과.pdf
@@ -156,12 +199,17 @@ python pdf_toc_add.py 책.pdf 목차.txt --lang en</code></pre>
   <li><strong>Windows 가 "알 수 없는 게시자" 경고를 띄워요.</strong> 서명이 없는 exe 라 나오는 경고입니다. "추가 정보 → 실행" 을 누르면 됩니다.</li>
   <li><strong>소스 코드는 어디 있나요?</strong> <a href="https://github.com/microhan1/pdf-toc-add">github.com/microhan1/pdf-toc-add</a> (MIT)</li>
 </ul>
+</div>
 </section>
 
 <!-- ======================================================= English -->
 <section data-lang="en">
+<div class="hero">
 <h1>PDF TOC Bookmarks</h1>
-<p class="lead">Adds bookmarks (an outline) to a scanned book PDF so you can jump straight to any chapter.</p>
+<p>Adds bookmarks (an outline) to a scanned book PDF so you can jump straight to any chapter.</p>
+<a class="btn" href="https://github.com/microhan1/pdf-toc-add/releases/latest">⬇ Download pdf_toc_add.exe</a><span class="sub">Windows · no install · free</span>
+</div>
+<div class="card">
 
 <h2>What you need</h2>
 <ul>
@@ -170,7 +218,7 @@ python pdf_toc_add.py 책.pdf 목차.txt --lang en</code></pre>
   <li>A text file listing the table of contents (Notepad is fine). You can also type it directly in the window.</li>
 </ul>
 
-<h2>1. Write the table of contents</h2>
+<h2><span class="num">1</span>Write the table of contents</h2>
 <p>One entry per line as <strong>title, page</strong>.</p>
 <pre><code>offset=8
 
@@ -191,7 +239,7 @@ Index, 52</code></pre>
   <li>UTF-8, UTF-16 and the Windows legacy code pages (CP949, GB18030) are detected automatically.</li>
 </ul>
 
-<h2>2. Pick the offset</h2>
+<h2><span class="num">2</span>Pick the offset</h2>
 <p>Because of the cover and front matter, the <strong>page number printed in the book</strong> differs from the <strong>PDF page number</strong>.
 Find which PDF page holds the book's page 1 and enter the difference as the offset.</p>
 <table>
@@ -202,7 +250,7 @@ Find which PDF page holds the book's page 1 and enter the difference as the offs
 </table>
 <p class="tip">Put <code>offset=8</code> on the first line of the TOC file and it is filled in automatically when you open the file.</p>
 
-<h2>3. Run it</h2>
+<h2><span class="num">3</span>Run it</h2>
 <p>Double-click <code>pdf_toc_add.exe</code>. Dropping a PDF onto the exe icon opens the window with that PDF already loaded. The language can be changed at the top right and is remembered.</p>
 <ol class="steps">
   <li><strong>PDF</strong> — drop the PDF into the box at the top. The file name and page count appear. <kbd>Browse…</kbd> works too.</li>
@@ -230,7 +278,7 @@ Find which PDF page holds the book's page 1 and enter the difference as the offs
   <tr><td>Output file open in another program</td><td>Error asking to close it and retry</td></tr>
 </table>
 
-<h2>4. Command line</h2>
+<h2><span class="num">4</span>Command line</h2>
 <p>To process many books, use the Python script (<code>pip install pypdf</code>).</p>
 <pre><code>python pdf_toc_add.py book.pdf toc.txt
 python pdf_toc_add.py book.pdf toc.txt --offset 8 -o out.pdf
@@ -253,12 +301,17 @@ python pdf_toc_add.py book.pdf toc.txt --lang en</code></pre>
   <li><strong>Windows shows an "unknown publisher" warning.</strong> The exe is unsigned. Click "More info → Run anyway".</li>
   <li><strong>Where is the source code?</strong> <a href="https://github.com/microhan1/pdf-toc-add">github.com/microhan1/pdf-toc-add</a> (MIT)</li>
 </ul>
+</div>
 </section>
 
 <!-- ======================================================= 中文 -->
 <section data-lang="zh">
+<div class="hero">
 <h1>PDF 目录书签</h1>
-<p class="lead">为扫描的图书 PDF 添加书签（目录），可直接跳转到任意章节。</p>
+<p>为扫描的图书 PDF 添加书签（目录），可直接跳转到任意章节。</p>
+<a class="btn" href="https://github.com/microhan1/pdf-toc-add/releases/latest">⬇ 下载 pdf_toc_add.exe</a><span class="sub">Windows · 无需安装 · 免费</span>
+</div>
+<div class="card">
 
 <h2>准备</h2>
 <ul>
@@ -267,7 +320,7 @@ python pdf_toc_add.py book.pdf toc.txt --lang en</code></pre>
   <li>写有目录的文本文件（用记事本即可）。也可以直接在窗口中输入。</li>
 </ul>
 
-<h2>1. 编写目录</h2>
+<h2><span class="num">1</span>编写目录</h2>
 <p>每行一项，格式为 <strong>标题, 页码</strong>。</p>
 <pre><code>offset=8
 
@@ -288,7 +341,7 @@ python pdf_toc_add.py book.pdf toc.txt --lang en</code></pre>
   <li>UTF-8、UTF-16 以及 Windows 旧编码（GB18030、CP949）均可自动识别。</li>
 </ul>
 
-<h2>2. 确定 offset（页码偏移）</h2>
+<h2><span class="num">2</span>确定 offset（页码偏移）</h2>
 <p>由于封面和前言，<strong>书上印刷的页码</strong>与 <strong>PDF 页码</strong>不一致。
 在 PDF 阅读器中查看书的第 1 页位于 PDF 第几页，把差值填为 offset。</p>
 <table>
@@ -299,7 +352,7 @@ python pdf_toc_add.py book.pdf toc.txt --lang en</code></pre>
 </table>
 <p class="tip">在目录文件第一行写 <code>offset=8</code>，打开文件时会自动填入。</p>
 
-<h2>3. 运行</h2>
+<h2><span class="num">3</span>运行</h2>
 <p>双击 <code>pdf_toc_add.exe</code> 打开窗口。把 PDF 拖到 exe 图标上，会直接带着该 PDF 打开。语言可在右上角切换，并会被记住。</p>
 <ol class="steps">
   <li><strong>PDF</strong> —— 把 PDF 拖入顶部的方框，会显示文件名和页数。也可以点 <kbd>浏览…</kbd>。</li>
@@ -327,7 +380,7 @@ python pdf_toc_add.py book.pdf toc.txt --lang en</code></pre>
   <tr><td>输出文件正被其他程序打开</td><td>错误，提示关闭后重试</td></tr>
 </table>
 
-<h2>4. 命令行</h2>
+<h2><span class="num">4</span>命令行</h2>
 <p>批量处理多本书时，请使用 Python 脚本（需要 <code>pip install pypdf</code>）。</p>
 <pre><code>python pdf_toc_add.py book.pdf toc.txt
 python pdf_toc_add.py book.pdf toc.txt --offset 8 -o out.pdf
@@ -350,8 +403,10 @@ python pdf_toc_add.py book.pdf toc.txt --lang zh</code></pre>
   <li><strong>Windows 提示“未知发布者”。</strong> 因为 exe 未签名。点击“更多信息 → 仍要运行”即可。</li>
   <li><strong>源代码在哪里？</strong> <a href="https://github.com/microhan1/pdf-toc-add">github.com/microhan1/pdf-toc-add</a>（MIT）</li>
 </ul>
+</div>
 </section>
 
+<footer>PDF TOC Bookmarks · <a href="https://github.com/microhan1/pdf-toc-add">GitHub</a> · MIT License</footer>
 </main>
 <script>
 (function () {
