@@ -1,2 +1,11 @@
-pypdf>=4.0
+pypdf>=6.19
 tkinterdnd2>=0.4
+pillow>=10
+# offset 자동 감지용 Windows 내장 OCR 바인딩 (Windows 에서만)
+winrt-runtime>=3.2; sys_platform == "win32"
+winrt-Windows.Foundation>=3.2; sys_platform == "win32"
+winrt-Windows.Foundation.Collections>=3.2; sys_platform == "win32"
+winrt-Windows.Globalization>=3.2; sys_platform == "win32"
+winrt-Windows.Graphics.Imaging>=3.2; sys_platform == "win32"
+winrt-Windows.Media.Ocr>=3.2; sys_platform == "win32"
+winrt-Windows.Storage.Streams>=3.2; sys_platform == "win32"

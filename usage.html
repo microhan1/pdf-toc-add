@@ -146,13 +146,14 @@ PDF 뷰어에서 책의 1쪽이 PDF 몇 페이지에 있는지 확인하고, 그
   <tr><td>PDF 15페이지</td><td>14</td></tr>
 </table>
 <p class="tip">목차 첫 줄에 <code>offset=8</code> 처럼 적어 두면 파일을 열 때 자동으로 채워집니다.</p>
+<div class="note"><strong>자동 감지.</strong> PDF 를 넣으면 책 본문에서 페이지 몇 장을 골라 인쇄된 쪽 번호를 읽고 offset 을 스스로 찾아 칸에 넣습니다. Windows 에 들어 있는 OCR 을 쓰므로 따로 설치할 것이 없고, PDF 에 글자 층이 있으면 그것을 씁니다. 쪽 번호가 없거나 두 쪽을 한 장에 스캔한 책처럼 확실하지 않을 때는 답을 내지 않습니다. 그때는 직접 입력하세요. 목차 파일에 <code>offset=</code> 이 이미 있으면 그 값을 우선하고, 감지값이 다르면 알려 줍니다. <kbd>자동 감지</kbd> 를 누르면 감지값으로 바꿉니다.</div>
 
 <h2><span class="num">3</span>실행하기</h2>
 <p><code>pdf_toc_add.exe</code> 를 더블클릭하면 창이 뜹니다. PDF 를 exe 아이콘 위에 끌어다 놓아도 그 PDF 가 들어간 채로 열립니다. 언어는 오른쪽 위에서 바꿀 수 있고 다음 실행 때도 기억됩니다.</p>
 <ol class="steps">
   <li><strong>PDF</strong> — 창 위쪽 상자에 PDF 를 끌어다 놓습니다. 파일 이름과 페이지 수가 표시됩니다. <kbd>찾아보기…</kbd> 로 골라도 됩니다.</li>
   <li><strong>목차</strong> — 텍스트 파일을 창에 끌어다 놓거나 <kbd>텍스트 파일 열기…</kbd> 로 불러오거나, 입력칸에 직접 타이핑합니다. <kbd>예시 채우기</kbd> 를 누르면 형식을 보고 고쳐 쓸 수 있습니다.</li>
-  <li><strong>offset</strong> — 쪽수 보정 값을 넣습니다.</li>
+  <li><strong>offset</strong> — PDF 를 넣으면 자동으로 찾아 채워집니다. 결과 칸의 근거(PDF 몇 페이지 = 인쇄 몇 쪽)를 보고, 못 찾았으면 직접 넣습니다.</li>
   <li><kbd>미리보기</kbd> 를 누르면 아래 결과 칸에 각 항목이 PDF 몇 페이지로 연결되는지 나옵니다.</li>
   <li><kbd>PDF 만들기</kbd> 를 누릅니다.</li>
 </ol>
@@ -186,6 +187,7 @@ python pdf_toc_add.py 책.pdf 목차.txt --lang en</code></pre>
   <tr><th>옵션</th><th>설명</th></tr>
   <tr><td><code>-o 파일</code></td><td>출력 PDF 이름. 기본은 <code>원본이름_toc.pdf</code></td></tr>
   <tr><td><code>--offset N</code></td><td>쪽수 보정. 목차 파일 안의 <code>offset=</code> 보다 우선</td></tr>
+  <tr><td><code>--auto-offset</code></td><td>스캔 이미지의 쪽 번호를 읽어 offset 을 찾음. 못 찾으면 종료 코드 1</td></tr>
   <tr><td><code>--dry-run</code></td><td>PDF 를 만들지 않고 연결 결과만 표시</td></tr>
   <tr><td><code>--keep-existing</code></td><td>기존 북마크를 지우지 않고 뒤에 추가</td></tr>
   <tr><td><code>--encoding 이름</code></td><td>목차 파일 인코딩 직접 지정</td></tr>
@@ -249,13 +251,14 @@ Find which PDF page holds the book's page 1 and enter the difference as the offs
   <tr><td>PDF page 15</td><td>14</td></tr>
 </table>
 <p class="tip">Put <code>offset=8</code> on the first line of the TOC file and it is filled in automatically when you open the file.</p>
+<div class="note"><strong>Auto-detect.</strong> When you add a PDF, the tool picks a few pages from the body of the book, reads the printed page numbers and fills in the offset. It uses the OCR built into Windows, so there is nothing to install, and it uses the PDF text layer when there is one. When the result is not certain, for example a book without page numbers or a scan with two book pages per sheet, it gives no answer and you enter the value yourself. An <code>offset=</code> line in the TOC file takes priority; if the detected value differs you are told, and <kbd>Auto-detect</kbd> switches to the detected value.</div>
 
 <h2><span class="num">3</span>Run it</h2>
 <p>Double-click <code>pdf_toc_add.exe</code>. Dropping a PDF onto the exe icon opens the window with that PDF already loaded. The language can be changed at the top right and is remembered.</p>
 <ol class="steps">
   <li><strong>PDF</strong> — drop the PDF into the box at the top. The file name and page count appear. <kbd>Browse…</kbd> works too.</li>
   <li><strong>Table of contents</strong> — drop a text file onto the window, use <kbd>Open text file…</kbd>, or type directly. <kbd>Fill example</kbd> shows the format.</li>
-  <li><strong>Offset</strong> — enter the page offset.</li>
+  <li><strong>Offset</strong> — filled in automatically when the PDF is added. Check the evidence in the result box (PDF page N = printed page M) and enter it yourself if nothing was found.</li>
   <li>Press <kbd>Preview</kbd> to see which PDF page each entry will point to.</li>
   <li>Press <kbd>Create PDF</kbd>.</li>
 </ol>
@@ -288,6 +291,7 @@ python pdf_toc_add.py book.pdf toc.txt --lang en</code></pre>
   <tr><th>Option</th><th>Meaning</th></tr>
   <tr><td><code>-o FILE</code></td><td>Output PDF. Default <code>&lt;name&gt;_toc.pdf</code></td></tr>
   <tr><td><code>--offset N</code></td><td>Page offset. Overrides <code>offset=</code> in the file</td></tr>
+  <tr><td><code>--auto-offset</code></td><td>Detect the offset from the printed page numbers. Exit code 1 if nothing is found</td></tr>
   <tr><td><code>--dry-run</code></td><td>Show the mapping without writing a PDF</td></tr>
   <tr><td><code>--keep-existing</code></td><td>Append to existing bookmarks instead of replacing them</td></tr>
   <tr><td><code>--encoding NAME</code></td><td>Force the TOC file encoding</td></tr>
@@ -351,13 +355,14 @@ python pdf_toc_add.py book.pdf toc.txt --lang en</code></pre>
   <tr><td>PDF 第 15 页</td><td>14</td></tr>
 </table>
 <p class="tip">在目录文件第一行写 <code>offset=8</code>，打开文件时会自动填入。</p>
+<div class="note"><strong>自动检测。</strong>放入 PDF 后，工具会从正文中选取几页，读取印刷页码并自动填入 offset。使用 Windows 自带的 OCR，无需安装；PDF 带文字层时直接使用文字层。结果不确定时（例如没有页码的书，或一张扫描了两页）不会给出答案，请手动输入。目录文件中已有 <code>offset=</code> 时以其为准，检测值不同会提示；点击 <kbd>自动检测</kbd> 即改用检测值。</div>
 
 <h2><span class="num">3</span>运行</h2>
 <p>双击 <code>pdf_toc_add.exe</code> 打开窗口。把 PDF 拖到 exe 图标上，会直接带着该 PDF 打开。语言可在右上角切换，并会被记住。</p>
 <ol class="steps">
   <li><strong>PDF</strong> —— 把 PDF 拖入顶部的方框，会显示文件名和页数。也可以点 <kbd>浏览…</kbd>。</li>
   <li><strong>目录</strong> —— 把文本文件拖到窗口中、点 <kbd>打开文本文件…</kbd>，或直接输入。点 <kbd>填入示例</kbd> 可查看格式。</li>
-  <li><strong>offset</strong> —— 填入页码偏移。</li>
+  <li><strong>offset</strong> —— 放入 PDF 后自动填入。请查看结果栏中的依据（PDF 第 N 页 = 印刷页 M），未找到时手动输入。</li>
   <li>点 <kbd>预览</kbd>，下方结果栏会显示每一项对应的 PDF 页码。</li>
   <li>点 <kbd>生成 PDF</kbd>。</li>
 </ol>
@@ -390,6 +395,7 @@ python pdf_toc_add.py book.pdf toc.txt --lang zh</code></pre>
   <tr><th>选项</th><th>说明</th></tr>
   <tr><td><code>-o 文件</code></td><td>输出 PDF。默认 <code>原文件名_toc.pdf</code></td></tr>
   <tr><td><code>--offset N</code></td><td>页码偏移。优先于文件中的 <code>offset=</code></td></tr>
+  <tr><td><code>--auto-offset</code></td><td>读取印刷页码自动检测 offset。找不到时退出码为 1</td></tr>
   <tr><td><code>--dry-run</code></td><td>只显示对应关系，不生成 PDF</td></tr>
   <tr><td><code>--keep-existing</code></td><td>保留已有书签并追加</td></tr>
   <tr><td><code>--encoding 名称</code></td><td>指定目录文件编码</td></tr>

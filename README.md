@@ -20,6 +20,7 @@
 
 - PDF 는 창에 **끌어다 놓거나** 찾아보기로 고릅니다. exe 아이콘 위에 PDF 를 놓아도 됩니다.
 - 목차는 **텍스트 파일을 끌어다 놓거나** 열기 버튼으로 불러오고, 입력칸에 **직접 타이핑**해도 됩니다.
+- PDF 를 넣으면 **offset 을 자동으로 찾습니다.** 스캔 이미지의 쪽 번호를 Windows 내장 OCR 로 읽습니다. PDF 에 글자 층이 있으면 그것을 씁니다. 확실하지 않으면 답을 내지 않으니 그때는 직접 입력합니다.
 - 미리보기로 연결 페이지를 확인한 뒤 PDF 만들기를 누릅니다.
 - 언어는 오른쪽 위에서 바꿉니다. Windows 표시 언어에 맞춰 자동 선택되고, 바꾸면 기억됩니다.
 
@@ -39,14 +40,14 @@ offset=8
 
 - 줄 끝 숫자가 쪽수입니다. 쉼표, 탭, 점선, `p.`, `쪽` 은 있어도 없어도 됩니다.
 - 들여쓰기하면 하위 항목. `#` 줄과 빈 줄은 무시.
-- `offset=8` 은 인쇄 쪽수와 PDF 페이지 차이입니다. 책 1쪽이 PDF 9페이지면 8.
+- `offset=8` 은 인쇄 쪽수와 PDF 페이지 차이입니다. 책 1쪽이 PDF 9페이지면 8. 창의 [자동 감지] 나 `--auto-offset` 으로 찾을 수도 있습니다.
 - UTF-8, UTF-16, CP949, GB18030 자동 판별.
 
 ### 명령줄
 
 ```bash
 pip install -r requirements.txt
-python pdf_toc_add.py 책.pdf 목차.txt [--offset 8] [-o 결과.pdf] [--dry-run] [--lang ko|en|zh]
+python pdf_toc_add.py 책.pdf 목차.txt [--offset 8 | --auto-offset] [-o 결과.pdf] [--dry-run] [--lang ko|en|zh]
 ```
 
 ### 오류 처리
@@ -65,6 +66,8 @@ python -m PyInstaller --onefile --windowed --name pdf_toc_add pdf_toc_add.py
 
 빌드된 exe 는 저장소에 넣지 않고 GitHub Releases 에 올립니다.
 
+offset 자동 감지는 정답을 아는 합성 스캔 책으로 검증합니다: `python tools/validate_offset.py collect train`, `collect validation`, `tune`.
+
 문자열은 [i18n.py](i18n.py) 한 곳에 모여 있습니다. 언어를 추가하려면 `STRINGS` 에 표를 하나 더 넣고 `LANGS`, `LANG_NAMES` 에 등록하면 됩니다.
 
 ---
@@ -81,6 +84,7 @@ Download `pdf_toc_add.exe` from [Releases](https://github.com/microhan1/pdf-toc-
 
 - **Drag and drop** the PDF onto the window, or use Browse. Dropping a PDF onto the exe icon also works.
 - **Drop a text file** for the table of contents, open one with the button, or **type it directly**.
+- When a PDF is added, **the offset is detected automatically** by reading the printed page numbers with the built-in Windows OCR, or from the PDF text layer when there is one. If the result is not certain, no value is set and you enter it yourself.
 - Press Preview to check the page mapping, then Create PDF.
 - The language selector is at the top right. It follows the Windows display language and remembers your choice.
 
@@ -100,14 +104,14 @@ Chapter 3 Conclusion p.40
 
 - The number at the end of the line is the page. Commas, tabs, dot leaders, `p.` and `page` are optional.
 - Indent for sub-entries. `#` lines and blank lines are ignored.
-- `offset=8` is the difference between printed and PDF page numbers: if book page 1 is PDF page 9, use 8.
+- `offset=8` is the difference between printed and PDF page numbers: if book page 1 is PDF page 9, use 8. [Auto-detect] in the window or `--auto-offset` can find it for you.
 - UTF-8, UTF-16, CP949 and GB18030 are detected automatically.
 
 ### Command line
 
 ```bash
 pip install -r requirements.txt
-python pdf_toc_add.py book.pdf toc.txt [--offset 8] [-o out.pdf] [--dry-run] [--lang ko|en|zh]
+python pdf_toc_add.py book.pdf toc.txt [--offset 8 | --auto-offset] [-o out.pdf] [--dry-run] [--lang ko|en|zh]
 ```
 
 ### Error handling
@@ -140,6 +144,7 @@ All strings live in [i18n.py](i18n.py). To add a language, add a table to `STRIN
 
 - 把 PDF **拖入窗口**或点“浏览”。把 PDF 拖到 exe 图标上也可以。
 - 目录可以**拖入文本文件**、用按钮打开，或**直接输入**。
+- 放入 PDF 后会**自动检测 offset**：用 Windows 内置 OCR 读取扫描图像中的页码；PDF 带文字层时直接使用文字层。结果不确定时不会填入，请手动输入。
 - 点“预览”确认页码对应关系，再点“生成 PDF”。
 - 语言在右上角切换。默认跟随 Windows 显示语言，切换后会记住。
 
@@ -159,14 +164,14 @@ offset=8
 
 - 行尾数字为页码。逗号、制表符、点线、`第`、`页` 有无均可。
 - 缩进表示子项。`#` 行和空行会被忽略。
-- `offset=8` 是印刷页码与 PDF 页码之差：书的第 1 页是 PDF 第 9 页时填 8。
+- `offset=8` 是印刷页码与 PDF 页码之差：书的第 1 页是 PDF 第 9 页时填 8。也可以用窗口中的“自动检测”或 `--auto-offset` 查找。
 - 自动识别 UTF-8、UTF-16、GB18030、CP949。
 
 ### 命令行
 
 ```bash
 pip install -r requirements.txt
-python pdf_toc_add.py book.pdf toc.txt [--offset 8] [-o out.pdf] [--dry-run] [--lang ko|en|zh]
+python pdf_toc_add.py book.pdf toc.txt [--offset 8 | --auto-offset] [-o out.pdf] [--dry-run] [--lang ko|en|zh]
 ```
 
 ### 错误处理

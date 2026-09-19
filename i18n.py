@@ -87,6 +87,26 @@ def tr(key: str, **kw) -> str:
 STRINGS: dict[str, dict[str, str]] = {}
 
 STRINGS["ko"] = {
+    # ---- offset 자동 감지
+    "btn_detect": "자동 감지",
+    "detect_start": "offset 자동 감지: 책 본문에서 {n}쪽을 골라 쪽 번호를 찾습니다.",
+    "detect_progress": "쪽 번호를 찾는 중… {i}/{n}쪽",
+    "detect_ok": "offset {offset:+d} 을(를) 찾았습니다. 쪽 번호가 보인 {pages}쪽 중 {votes}쪽이 같은 값을 가리킵니다 {how}.",
+    "detect_how_text": "(PDF 글자 층 사용)",
+    "detect_how_ocr": "(Windows OCR 사용)",
+    "detect_evidence": "    PDF {pdf}페이지 = 인쇄 {page}쪽",
+    "detect_applied": "offset 칸에 {offset} 을(를) 넣었습니다. 미리보기로 한두 개 확인해 보세요.",
+    "detect_kept": "목차의 offset={current} 과 감지값 {found} 이 다릅니다. 목차 값을 그대로 두었습니다. 감지값을 쓰려면 [자동 감지] 를 누르세요.",
+    "detect_fail_title": "offset 을 자동으로 찾지 못했습니다",
+    "detect_fail_no_numbers": "쪽 번호로 보이는 숫자를 찾지 못했습니다. 쪽 번호가 없는 책이거나 글자가 너무 흐릴 수 있습니다.",
+    "detect_fail_inconsistent": "쪽 번호 후보가 서로 맞지 않습니다 ({votes}/{pages}쪽 일치). 두 쪽을 한 장에 스캔했거나 쪽 번호가 불규칙할 수 있습니다.",
+    "detect_fail_ocr_unavailable": "이 PDF 에는 글자 층이 없고, 이 컴퓨터에서 Windows OCR 을 쓸 수 없습니다.",
+    "detect_fail_no_pages": "PDF 에 살펴볼 페이지가 없습니다.",
+    "detect_fail_hint": "PDF 뷰어에서 책 1쪽이 PDF 몇 페이지인지 보고 offset 을 직접 입력하세요.",
+    "detect_cancelled": "offset 자동 감지를 취소했습니다.",
+    "detect_error": "자동 감지 중 오류가 났습니다: {err}",
+    "cli_auto_offset": "스캔 이미지의 쪽 번호를 읽어 offset 을 자동으로 찾는다 (--offset 이 있으면 무시)",
+    "cli_detect_differs": "목차 파일의 offset={file} 대신 자동 감지한 {found} 을(를) 씁니다.",
     # ---- 목차 파일 읽기
     "read_err": "목차 파일을 읽을 수 없습니다: {path}\n      ({err})",
     "empty_file": "목차 파일이 비어 있습니다: {name}",
@@ -238,6 +258,26 @@ STRINGS["ko"] = {
 }
 
 STRINGS["en"] = {
+    # ---- offset 자동 감지
+    "btn_detect": "Auto-detect",
+    "detect_start": "Offset auto-detect: checking page numbers on {n} pages from the body of the book.",
+    "detect_progress": "Looking for page numbers… {i}/{n}",
+    "detect_ok": "Found offset {offset:+d}. {votes} of the {pages} pages with a page number agree {how}.",
+    "detect_how_text": "(from the PDF text layer)",
+    "detect_how_ocr": "(using Windows OCR)",
+    "detect_evidence": "    PDF page {pdf} = printed page {page}",
+    "detect_applied": "Set the offset to {offset}. Check one or two entries with Preview.",
+    "detect_kept": "The TOC says offset={current} but {found} was detected. The TOC value was kept. Press [Auto-detect] to use the detected value.",
+    "detect_fail_title": "Could not detect the offset",
+    "detect_fail_no_numbers": "No page numbers were found. The book may have no page numbers, or the print may be too faint.",
+    "detect_fail_inconsistent": "The page-number candidates do not agree ({votes}/{pages} pages). The scan may have two book pages per sheet, or irregular numbering.",
+    "detect_fail_ocr_unavailable": "This PDF has no text layer and Windows OCR is not available on this computer.",
+    "detect_fail_no_pages": "The PDF has no pages to examine.",
+    "detect_fail_hint": "Find which PDF page holds book page 1 in a PDF viewer and enter the offset yourself.",
+    "detect_cancelled": "Offset auto-detect was cancelled.",
+    "detect_error": "Auto-detect failed: {err}",
+    "cli_auto_offset": "detect the offset from the page numbers in the scan (ignored when --offset is given)",
+    "cli_detect_differs": "Using the detected offset {found} instead of offset={file} from the TOC file.",
     "read_err": "Cannot read the TOC file: {path}\n      ({err})",
     "empty_file": "The TOC file is empty: {name}",
     "decode_fail": "Could not decode the TOC file as '{enc}': {err}",
@@ -383,6 +423,26 @@ STRINGS["en"] = {
 }
 
 STRINGS["zh"] = {
+    # ---- offset 자동 감지
+    "btn_detect": "自动检测",
+    "detect_start": "自动检测 offset：从正文中选取 {n} 页查找页码。",
+    "detect_progress": "正在查找页码… {i}/{n}",
+    "detect_ok": "检测到 offset {offset:+d}。在找到页码的 {pages} 页中，有 {votes} 页指向同一个值{how}。",
+    "detect_how_text": "（使用 PDF 文字层）",
+    "detect_how_ocr": "（使用 Windows OCR）",
+    "detect_evidence": "    PDF 第 {pdf} 页 = 印刷页 {page}",
+    "detect_applied": "已将 offset 设为 {offset}。请用“预览”核对一两项。",
+    "detect_kept": "目录中的 offset={current} 与检测值 {found} 不同，已保留目录中的值。若要使用检测值，请点击“自动检测”。",
+    "detect_fail_title": "无法自动检测 offset",
+    "detect_fail_no_numbers": "没有找到像页码的数字。这本书可能没有页码，或者字迹太淡。",
+    "detect_fail_inconsistent": "页码候选互相不一致（{votes}/{pages} 页一致）。可能是一张扫描了两页，或页码不规则。",
+    "detect_fail_ocr_unavailable": "此 PDF 没有文字层，且这台电脑无法使用 Windows OCR。",
+    "detect_fail_no_pages": "PDF 中没有可检查的页面。",
+    "detect_fail_hint": "请在 PDF 阅读器中查看书的第 1 页位于 PDF 第几页，并手动输入 offset。",
+    "detect_cancelled": "已取消自动检测 offset。",
+    "detect_error": "自动检测出错：{err}",
+    "cli_auto_offset": "读取扫描图像中的页码自动检测 offset（指定 --offset 时忽略）",
+    "cli_detect_differs": "使用自动检测的 {found}，而不是目录文件中的 offset={file}。",
     "read_err": "无法读取目录文件：{path}\n      （{err}）",
     "empty_file": "目录文件为空：{name}",
     "decode_fail": "无法以“{enc}”编码读取目录文件：{err}",
