@@ -70,6 +70,8 @@ offset 자동 감지는 정답을 아는 합성 스캔 책으로 검증합니다
 
 문자열은 [i18n.py](i18n.py) 한 곳에 모여 있습니다. 언어를 추가하려면 `STRINGS` 에 표를 하나 더 넣고 `LANGS`, `LANG_NAMES` 에 등록하면 됩니다.
 
+책을 다 읽었다면 [책갈피 라이브러리](https://chaekgalpi.co.kr/?utm_source=github&utm_medium=referral&utm_campaign=tool_cta&utm_content=pdftoc)에 기록해 보세요. 읽은 책과 독서록을 남기는 웹 서비스입니다.
+
 ---
 
 ## English
@@ -130,6 +132,8 @@ python -m PyInstaller --onefile --windowed --name pdf_toc_add pdf_toc_add.py
 
 All strings live in [i18n.py](i18n.py). To add a language, add a table to `STRINGS` and register it in `LANGS` and `LANG_NAMES`.
 
+Finished the book? Log it on [Chaekgalpi Library](https://chaekgalpi.co.kr/?utm_source=github&utm_medium=referral&utm_campaign=tool_cta&utm_content=pdftoc), a web service for keeping track of the books you read (Korean only).
+
 ---
 
 ## 中文
@@ -189,3 +193,5 @@ python -m PyInstaller --onefile --windowed --name pdf_toc_add pdf_toc_add.py
 ```
 
 所有字符串都在 [i18n.py](i18n.py) 中。要新增语言，在 `STRINGS` 中添加一张表，并在 `LANGS` 和 `LANG_NAMES` 中登记即可。
+
+读完这本书后，可以在 [书签图书馆（Chaekgalpi Library）](https://chaekgalpi.co.kr/?utm_source=github&utm_medium=referral&utm_campaign=tool_cta&utm_content=pdftoc) 记录下来——这是一个记录读过的书和读书笔记的网页服务（仅韩语）。
