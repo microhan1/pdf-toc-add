@@ -29,6 +29,11 @@ class UpdateInfo:
     latest: str
     current: str
     url: str
+    url_en: str = ""   # 영어 판 툴 페이지. 서버가 주지 않으면 빈 문자열
+
+    def page_for(self, lang: str) -> str:
+        """화면 언어에 맞는 페이지. 영어·중국어 화면은 영어 판이 있으면 그쪽을 연다."""
+        return self.url_en if (lang in ("en", "zh") and self.url_en) else self.url
 
 
 def today() -> str:
@@ -69,7 +74,10 @@ def interpret(data: dict | None, version: str, skipped: str = "") -> UpdateInfo 
     latest = latest.strip()
     if latest == (skipped or "").strip():
         return None
-    return UpdateInfo(latest, version, url)
+    url_en = data.get("urlEn")
+    if not isinstance(url_en, str) or not url_en.startswith(SITE):  # 없거나 책갈피 밖이면 안 쓴다
+        url_en = ""
+    return UpdateInfo(latest, version, url, url_en)
 
 
 def check_async(root, slug: str, version: str, prefs, on_result: Callable[[UpdateInfo | None, bool], None], *,

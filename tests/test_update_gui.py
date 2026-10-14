@@ -136,6 +136,32 @@ def test_update_opens_the_tools_page_only(env):
     close(app)
 
 
+EN_URL = "https://chaekgalpi.co.kr/en/tools/pdftoc?utm_source=app&utm_medium=update"
+
+
+def test_an_english_screen_opens_the_english_page(env):
+    env["answer"] = dict(OK, urlEn=EN_URL)
+    app = start(env, {"lang": "en"})
+    assert pump(app, lambda: shown(app))
+    app._update_open()
+    app.root.update()
+    assert env["opened"] == [EN_URL]
+    close(app)
+
+
+def test_switching_to_korean_opens_the_korean_page(env):
+    env["answer"] = dict(OK, urlEn=EN_URL)
+    app = start(env, {"lang": "en"})
+    assert pump(app, lambda: shown(app))
+    app.lang_var.set(i18n.LANG_NAMES["ko"])
+    app._on_lang_change()
+    app.root.update()
+    app._update_open()
+    app.root.update()
+    assert env["opened"] == [OK["url"]]
+    close(app)
+
+
 def test_another_domain_is_never_opened(env):
     """서버가 다른 주소를 돌려주면 알림 자체가 뜨지 않고, 억지로 넣어도 열지 않는다."""
     env["answer"] = dict(OK, url="https://evil.example/pdftoc")

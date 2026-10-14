@@ -222,6 +222,33 @@ def test_odd_versions_show_nothing(latest):
     assert uc.interpret(dict(OK, latest=latest), CUR) is None
 
 
+# ------------------------------------------------------------------ 어느 페이지를 여는가
+EN_URL = "https://chaekgalpi.co.kr/en/tools/pdftoc?utm_source=app&utm_medium=update"
+
+
+def test_korean_screen_opens_the_korean_page():
+    info = uc.interpret(dict(OK, urlEn=EN_URL), CUR)
+    assert info.page_for("ko") == OK["url"]
+
+
+@pytest.mark.parametrize("lang", ["en", "zh"])
+def test_english_and_chinese_screens_open_the_english_page(lang):
+    info = uc.interpret(dict(OK, urlEn=EN_URL), CUR)
+    assert info.url_en == EN_URL and info.page_for(lang) == EN_URL
+
+
+@pytest.mark.parametrize("url_en", [None, "", 5, "https://evil.example/en/tools/pdftoc",
+                                    "http://chaekgalpi.co.kr/en/tools/pdftoc", "javascript:alert(1)"])
+def test_without_a_usable_english_page_every_screen_opens_the_korean_one(url_en):
+    info = uc.interpret(dict(OK, urlEn=url_en), CUR)
+    assert info.url_en == "" and info.page_for("en") == OK["url"] and info.page_for("ko") == OK["url"]
+
+
+def test_an_answer_without_the_english_key_still_works():
+    info = uc.interpret(OK, CUR)  # urlEn 자체가 없는 예전 서버 응답
+    assert info.url_en == "" and info.page_for("zh") == OK["url"]
+
+
 def test_the_version_is_trimmed():
     assert uc.interpret(dict(OK, latest=" 1.2.0 "), CUR).latest == "1.2.0"
 

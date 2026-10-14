@@ -500,14 +500,17 @@ class App:
         self.frm_update.grid_remove()
 
     def _update_open(self) -> None:
-        """내려받지 않고 툴 소개 페이지만 연다. 책갈피 주소일 때만."""
+        """내려받지 않고 툴 소개 페이지만 연다. 책갈피 주소일 때만.
+        영어·중국어 화면이면 영어 판 페이지가 있을 때 그쪽을 연다."""
         import webbrowser
         info = self._update_info
-        if info is not None and info.url.startswith(update_check.SITE):
-            try:
-                webbrowser.open(info.url)
-            except Exception:
-                pass
+        if info is not None:
+            page = info.page_for(get_lang())
+            if page.startswith(update_check.SITE):
+                try:
+                    webbrowser.open(page)
+                except Exception:
+                    pass
         self._hide_update_notice()
 
     def _update_later(self) -> None:
