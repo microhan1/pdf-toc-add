@@ -15,6 +15,9 @@ from tkinter import filedialog, messagebox, ttk
 
 import offset_detect
 import pdf_toc_add as core
+import prefs as prefs_mod
+import update_check
+import version
 from i18n import LANG_NAMES, LANGS, get_lang, save_lang, set_lang, tr
 
 try:
@@ -64,6 +67,10 @@ class App:
         self._closing = False
         self._detect_queue: queue.Queue = queue.Queue()
         self._polling = False
+        # 새 버전 확인: 창이 뜬 뒤 1.5초에 백그라운드로 한 번. 실패는 조용히.
+        self.prefs = prefs_mod.load()
+        self.var_update_check = tk.BooleanVar(value=self.prefs.update_check)
+        self._update_info: update_check.UpdateInfo | None = None
 
         root.geometry("720x800")
         root.minsize(640, 660)
@@ -80,6 +87,8 @@ class App:
             root.dnd_bind("<<Drop>>", self._on_drop)
 
         root.protocol("WM_DELETE_WINDOW", self._on_close)
+
+        update_check.check_async(root, version.UPDATE_SLUG, version.APP_VERSION, self.prefs, self._on_update_result)
 
         if pdf:
             self.set_pdf(Path(pdf))
@@ -150,6 +159,7 @@ class App:
         self._build_toc_zone()
         self._build_options()
         self._build_log()
+        self._build_update_notice()
 
     def _build_header(self) -> None:
         f = ttk.Frame(self.root, padding=(PAD, 18, PAD, 10))
@@ -229,8 +239,13 @@ class App:
         ttk.Entry(out, textvariable=self.out_var, font=FONT).grid(row=0, column=0, sticky="ew")
         ttk.Button(out, text=tr("btn_change"), command=self.browse_out).grid(row=0, column=1, padx=(6, 0))
 
+        if not hasattr(self, "var_update_check"):
+            self.var_update_check = tk.BooleanVar(value=self.prefs.update_check)
+        ttk.Checkbutton(body, text=tr("opt_update_check"), variable=self.var_update_check,
+                        command=self._on_update_toggle).grid(row=2, column=0, columnspan=2, sticky="w", pady=(10, 0))
+
         btns = ttk.Frame(body)
-        btns.grid(row=2, column=0, columnspan=2, sticky="e", pady=(14, 4))
+        btns.grid(row=3, column=0, columnspan=2, sticky="e", pady=(10, 4))
         self.preview_btn = ttk.Button(btns, text=tr("btn_preview"), command=self.preview)
         self.preview_btn.pack(side="left", padx=(0, 8))
         self.run_btn = tk.Button(
@@ -445,6 +460,70 @@ class App:
             self.lang_cb.configure(state="disabled" if busy else "readonly")
         except tk.TclError:
             pass
+
+    # ------------------------------------------------------------ 새 버전 알림
+
+    def _build_update_notice(self) -> None:
+        """창 맨 아래 한 줄짜리 알림. 새 버전이 있을 때만 보인다 (대화상자는 쓰지 않는다)."""
+        self.frm_update = tk.Frame(self.root, bg=ACCENT_SOFT, highlightthickness=1, highlightbackground=OK_BORDER)
+        self.frm_update.columnconfigure(0, weight=1)
+        self.lbl_update = tk.Label(self.frm_update, text="", bg=ACCENT_SOFT, fg=ACCENT_DARK, font=FONT, anchor="w")
+        self.lbl_update.grid(row=0, column=0, sticky="w", padx=(12, 8), pady=8)
+        self.btn_update_open = ttk.Button(self.frm_update, text=tr("btn_update"), command=self._update_open)
+        self.btn_update_open.grid(row=0, column=1, padx=(0, 6), pady=6)
+        self.btn_update_later = ttk.Button(self.frm_update, text=tr("btn_later"), command=self._update_later)
+        self.btn_update_later.grid(row=0, column=2, padx=(0, 10), pady=6)
+        if self._update_info is not None:  # 언어를 바꿔 다시 그린 경우
+            self._show_update_notice()
+
+    def _on_update_result(self, info: "update_check.UpdateInfo | None", answered: bool) -> None:
+        """Tk 스레드. 서버가 답했을 때만 날짜를 기록한다(오프라인이면 다음에 다시 묻는다)."""
+        if self._closing:
+            return
+        if answered:
+            self.prefs.update_check_last = update_check.today()
+            self._save_prefs()
+        if info is not None and self.var_update_check.get():
+            self._update_info = info
+            self._show_update_notice()
+
+    def _show_update_notice(self) -> None:
+        info = self._update_info
+        if info is None:
+            self.frm_update.grid_remove()
+            return
+        self.lbl_update.configure(text=tr("update_available", latest=info.latest, current=info.current))
+        self.frm_update.grid(row=5, column=0, sticky="ew", padx=PAD, pady=(0, 12))
+
+    def _hide_update_notice(self) -> None:
+        self._update_info = None
+        self.frm_update.grid_remove()
+
+    def _update_open(self) -> None:
+        """내려받지 않고 툴 소개 페이지만 연다. 책갈피 주소일 때만."""
+        import webbrowser
+        info = self._update_info
+        if info is not None and info.url.startswith(update_check.SITE):
+            try:
+                webbrowser.open(info.url)
+            except Exception:
+                pass
+        self._hide_update_notice()
+
+    def _update_later(self) -> None:
+        if self._update_info is not None:
+            self.prefs.update_check_skipped = self._update_info.latest  # 더 새 버전이 나오면 다시 알린다
+            self._save_prefs()
+        self._hide_update_notice()
+
+    def _on_update_toggle(self) -> None:
+        self._save_prefs()
+        if not self.var_update_check.get():
+            self._hide_update_notice()
+
+    def _save_prefs(self) -> None:
+        self.prefs.update_check = bool(self.var_update_check.get())
+        prefs_mod.save(self.prefs)
 
     def _on_close(self) -> None:
         """창 닫기: 감지 스레드를 멈추게 하고, 끝날 때까지 기다렸다가 닫는다."""

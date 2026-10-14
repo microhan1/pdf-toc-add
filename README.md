@@ -56,6 +56,15 @@ python pdf_toc_add.py 책.pdf 목차.txt [--offset 8 | --auto-offset] [-o 결과
 - 잡아내는 것: 쪽수 없는 줄, 로마 숫자 쪽수, 숫자만 있는 줄, 쪽수 0, 잘못된 offset 값, PDF 범위를 벗어난 쪽수, 목차 자리의 PDF/이미지/Word 파일, PDF 가 아닌 파일, 손상되거나 암호 걸린 PDF, 잠긴 출력 파일, 없는 출력 폴더.
 - 경고만 하는 것: 쪽수 범위(`12-15` 는 12 사용), 앞 항목보다 작은 쪽수, `#` 주석이 된 항목, offset 줄 중복.
 
+### 새 버전 확인
+
+실행할 때 새 버전이 있는지 확인하려고 도구 이름과 버전만 책갈피 서버(chaekgalpi.co.kr)에 보냅니다. 파일은 보내지 않고, 하루 한 번만 확인하며, 설정에서 끌 수 있습니다.
+
+- 새 버전이 있으면 창 맨 아래에 한 줄로 알려 줍니다. 대화상자를 띄우지 않으므로 작업을 막지 않습니다.
+- 새 버전을 자동으로 내려받거나 바꾸지 않습니다. [업데이트]를 누르면 툴 소개 페이지만 열립니다.
+- [다음에]를 누르면 그 버전은 다시 알리지 않습니다. 「3 설정」의 **새 버전 확인** 체크를 끄면 아예 묻지 않습니다.
+- 확인이 실패하면(인터넷이 없거나 서버가 조용하면) 아무 말 없이 지나갑니다. 설정은 `%APPDATA%\pdf_toc_add\config.json` 에 저장됩니다.
+
 ### 개발
 
 ```bash
@@ -122,6 +131,15 @@ python pdf_toc_add.py book.pdf toc.txt [--offset 8 | --auto-offset] [-o out.pdf]
 - Caught: missing page numbers, Roman-numeral pages, number-only lines, page 0, bad offset values, pages outside the PDF, PDF/image/Word files given as the TOC, non-PDF or damaged or password-protected PDFs, locked output files, missing output folders.
 - Warnings only: page ranges (`12-15` uses 12), pages smaller than the previous entry, entries commented out with `#`, duplicate offset lines.
 
+### Checking for a new version
+
+On start the tool sends only its name and version to the Chaekgalpi server (chaekgalpi.co.kr) to ask whether a newer version exists. No files are sent, it asks once a day, and you can switch it off.
+
+- When a newer version exists, one line appears at the bottom of the window. There is no dialog, so nothing blocks your work.
+- Nothing is downloaded or replaced automatically. **Update** only opens the tool's page.
+- **Later** silences that version; unticking **Check for updates** in section 3 stops the question altogether.
+- A failed check (offline, or a quiet server) passes silently. Settings live in `%APPDATA%\pdf_toc_add\config.json`.
+
 ### Development
 
 ```bash
@@ -183,6 +201,15 @@ python pdf_toc_add.py book.pdf toc.txt [--offset 8 | --auto-offset] [-o out.pdf]
 - 一次列出所有问题行，包括行号、原文和修改方法；GUI 中会将这些行标红。
 - 可检测：缺少页码、罗马数字页码、只有数字的行、页码 0、offset 值无效、页码超出 PDF 范围、把 PDF/图片/Word 文件当作目录、非 PDF 或损坏或加密的 PDF、被占用的输出文件、不存在的输出文件夹。
 - 仅警告：页码范围（`12-15` 取 12）、页码小于前一项、被 `#` 注释掉的条目、重复的 offset 行。
+
+### 检查新版本
+
+启动时仅把工具名称和版本发送到书签服务器（chaekgalpi.co.kr），以询问是否有新版本。不会发送任何文件，每天只检查一次，并且可以关闭。
+
+- 有新版本时，窗口底部只显示一行提示。不弹出对话框，不会打断操作。
+- 不会自动下载或替换程序。点击 **更新** 只会打开工具介绍页面。
+- 点击 **以后** 后不再提示该版本；在「3 设置」中取消勾选 **检查新版本** 即可完全关闭。
+- 检查失败（无网络或服务器无响应）时静默跳过。设置保存在 `%APPDATA%\pdf_toc_add\config.json`。
 
 ### 开发
 

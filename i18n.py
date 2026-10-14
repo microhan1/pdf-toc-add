@@ -23,22 +23,33 @@ def config_path() -> Path:
     return Path(base) / "pdf_toc_add" / "config.json"
 
 
-def load_saved_lang() -> str | None:
+def load_settings() -> dict:
+    """설정 파일 전체. 없거나 깨졌으면 빈 사전. 값의 타입은 쓰는 쪽에서 검사한다."""
     try:
         data = json.loads(config_path().read_text(encoding="utf-8"))
-        lang = data.get("lang")
-        return lang if lang in LANGS else None
-    except (OSError, ValueError, AttributeError):
-        return None
+    except (OSError, ValueError):
+        return {}
+    return data if isinstance(data, dict) else {}
 
 
-def save_lang(lang: str) -> None:
+def save_settings(settings: dict) -> None:
     try:
         p = config_path()
         p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(json.dumps({"lang": lang}), encoding="utf-8")
+        p.write_text(json.dumps(settings, ensure_ascii=False), encoding="utf-8")
     except OSError:
         pass  # 저장 실패는 치명적이지 않음
+
+
+def load_saved_lang() -> str | None:
+    lang = load_settings().get("lang")
+    return lang if lang in LANGS else None
+
+
+def save_lang(lang: str) -> None:
+    settings = load_settings()  # 다른 설정(새 버전 확인 등)을 지우지 않도록 합쳐서 쓴다
+    settings["lang"] = lang
+    save_settings(settings)
 
 
 def detect_lang() -> str:
@@ -87,6 +98,11 @@ def tr(key: str, **kw) -> str:
 STRINGS: dict[str, dict[str, str]] = {}
 
 STRINGS["ko"] = {
+    # ---- 새 버전 확인
+    "opt_update_check": "새 버전 확인",
+    "update_available": "새 버전이 나왔습니다: {latest} (현재 {current})",
+    "btn_update": "업데이트",
+    "btn_later": "다음에",
     # ---- offset 자동 감지
     "btn_detect": "자동 감지",
     "detect_start": "offset 자동 감지: 책 본문에서 {n}쪽을 골라 쪽 번호를 찾습니다.",
@@ -258,6 +274,11 @@ STRINGS["ko"] = {
 }
 
 STRINGS["en"] = {
+    # ---- 새 버전 확인
+    "opt_update_check": "Check for updates",
+    "update_available": "Version {latest} is available (current {current})",
+    "btn_update": "Update",
+    "btn_later": "Later",
     # ---- offset 자동 감지
     "btn_detect": "Auto-detect",
     "detect_start": "Offset auto-detect: checking page numbers on {n} pages from the body of the book.",
@@ -423,6 +444,11 @@ STRINGS["en"] = {
 }
 
 STRINGS["zh"] = {
+    # ---- 새 버전 확인
+    "opt_update_check": "检查新版本",
+    "update_available": "有新版本 {latest}（当前 {current}）",
+    "btn_update": "更新",
+    "btn_later": "以后",
     # ---- offset 자동 감지
     "btn_detect": "自动检测",
     "detect_start": "自动检测 offset：从正文中选取 {n} 页查找页码。",
