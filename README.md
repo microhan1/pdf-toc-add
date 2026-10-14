@@ -150,7 +150,7 @@ python -m PyInstaller --onefile --windowed --name pdf_toc_add pdf_toc_add.py
 
 All strings live in [i18n.py](i18n.py). To add a language, add a table to `STRINGS` and register it in `LANGS` and `LANG_NAMES`.
 
-Finished the book? Log it on [Chaekgalpi Library](https://chaekgalpi.co.kr/tools/pdftoc?utm_source=github&utm_medium=referral&utm_campaign=tool_cta&utm_content=pdftoc), a web service for keeping track of the books you read (Korean only).
+Finished the book? Log it on [Chaekgalpi Library](https://chaekgalpi.co.kr/en/tools/pdftoc?utm_source=github&utm_medium=referral&utm_campaign=tool_cta&utm_content=pdftoc), a web service for keeping track of the books you read (tools page in English; the reading-log service itself is in Korean).
 
 ---
 
