@@ -279,14 +279,19 @@ def test_the_window_keeps_working_after_the_notice(env):
 
 
 CLOSE_WHILE_ASKING = r"""
-import functools, json, os, sys, tempfile, time
+import functools, json, os, sys, tempfile, time, urllib.error, urllib.request
 sys.path.insert(0, {root!r})
+def _blocked(req, *a, **kw):      # 자식 프로세스에는 conftest 가 없으므로 여기서 막는다
+    raise urllib.error.URLError("시험에서는 운영 서버에 접속하지 않는다")
+urllib.request.urlopen = _blocked
 import i18n
 _cfg = os.path.join(tempfile.mkdtemp(), "config.json")
 i18n.config_path = lambda: __import__("pathlib").Path(_cfg)
 i18n.set_lang("en")
 import tkinter as tk
 import pdf_toc_gui as gui, update_check as uc
+uc.fetch.__kwdefaults__["opener"] = _blocked
+uc.check_async.__kwdefaults__["fetcher"] = lambda slug, version: None
 def slow(slug, version):
     time.sleep(1.5)          # 답을 기다리는 중에 창이 닫힌다
     return {{"latest": "1.2.0", "updateAvailable": True, "url": "https://chaekgalpi.co.kr/tools/pdftoc"}}
