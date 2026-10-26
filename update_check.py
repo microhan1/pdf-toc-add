@@ -32,8 +32,9 @@ class UpdateInfo:
     url_en: str = ""   # 영어 판 툴 페이지. 서버가 주지 않으면 빈 문자열
 
     def page_for(self, lang: str) -> str:
-        """화면 언어에 맞는 페이지. 영어·중국어 화면은 영어 판이 있으면 그쪽을 연다."""
-        return self.url_en if (lang in ("en", "zh") and self.url_en) else self.url
+        """화면 언어에 맞는 페이지. 영어·중국어·일본어 화면은 영어 판이 있으면 그쪽을 연다
+        (중국어·일본어 판 툴 페이지는 없다)."""
+        return self.url_en if (lang in ("en", "zh", "ja") and self.url_en) else self.url
 
 
 def feedback_url(slug: str, version: str | None, lang: str | None) -> str:

@@ -13,13 +13,15 @@ import pdf_toc_add as core  # noqa: E402
 
 
 def test_all_languages_have_same_keys():
-    ko, en, zh = (set(i18n.STRINGS[c]) for c in ("ko", "en", "zh"))
-    assert ko == en == zh, {"ko-en": ko ^ en, "ko-zh": ko ^ zh}
+    assert set(i18n.STRINGS) == set(i18n.LANGS) == {"ko", "en", "zh", "ja"}
+    ko = set(i18n.STRINGS["ko"])
+    diff = {c: ko ^ set(i18n.STRINGS[c]) for c in i18n.LANGS}
+    assert all(not d for d in diff.values()), diff
 
 
 @pytest.mark.parametrize("lang", i18n.LANGS)
 def test_every_string_formats_without_error(lang):
-    """자리표시자 이름이 세 언어에서 같고, format 이 깨지지 않는지."""
+    """자리표시자 이름이 네 언어에서 같고, format 이 깨지지 않는지."""
     import string
     fmt = string.Formatter()
     for key, text in i18n.STRINGS[lang].items():
@@ -31,7 +33,7 @@ def test_every_string_formats_without_error(lang):
         text.format(**kw)
 
 
-@pytest.mark.parametrize("lang,needle", [("ko", "행"), ("en", "Line 1"), ("zh", "第 1 行")])
+@pytest.mark.parametrize("lang,needle", [("ko", "행"), ("en", "Line 1"), ("zh", "第 1 行"), ("ja", "1 行目")])
 def test_parse_error_language(lang, needle):
     i18n.set_lang(lang)
     with pytest.raises(core.TocParseError) as ei:

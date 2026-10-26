@@ -1,4 +1,4 @@
-"""i18n.py - 한국어 / English / 中文 메시지 모음.
+"""i18n.py - 한국어 / English / 中文 / 日本語 메시지 모음.
 
 사용:  from i18n import tr, set_lang
        tr("btn_browse")            -> 현재 언어의 문자열
@@ -11,8 +11,8 @@ import json
 import os
 from pathlib import Path
 
-LANGS = ("ko", "en", "zh")
-LANG_NAMES = {"ko": "한국어", "en": "English", "zh": "中文"}
+LANGS = ("ko", "en", "zh", "ja")
+LANG_NAMES = {"ko": "한국어", "en": "English", "zh": "中文", "ja": "日本語"}
 _lang = "en"
 
 
@@ -63,7 +63,7 @@ def detect_lang() -> str:
     try:
         import ctypes
         langid = ctypes.windll.kernel32.GetUserDefaultUILanguage() & 0x3FF
-        return {0x12: "ko", 0x04: "zh", 0x09: "en"}.get(langid, "en")
+        return {0x12: "ko", 0x04: "zh", 0x11: "ja", 0x09: "en"}.get(langid, "en")
     except Exception:
         pass
     try:
@@ -73,6 +73,8 @@ def detect_lang() -> str:
             return "ko"
         if loc.startswith(("zh", "chinese")):
             return "zh"
+        if loc.startswith(("ja", "japanese")):
+            return "ja"
     except Exception:
         pass
     return "en"
@@ -181,7 +183,7 @@ STRINGS["ko"] = {
     "cli_encoding": "목차 파일 인코딩 (기본: 자동 판별)",
     "cli_keep": "PDF에 이미 있는 북마크를 지우지 않고 뒤에 추가",
     "cli_dry": "PDF를 쓰지 않고 파싱 결과만 출력",
-    "cli_lang": "표시 언어: ko, en, zh (기본: 자동)",
+    "cli_lang": "표시 언어: ko, en, zh, ja (기본: 자동)",
     "cli_epilog": (
         "목차 파일 형식 (한 줄에 항목 하나):\n"
         "    1장 서론, 12쪽\n"
@@ -355,7 +357,7 @@ STRINGS["en"] = {
     "cli_encoding": "TOC file encoding (default: auto-detect)",
     "cli_keep": "keep existing bookmarks and append instead of replacing",
     "cli_dry": "parse and report only; do not write a PDF",
-    "cli_lang": "display language: ko, en, zh (default: auto)",
+    "cli_lang": "display language: ko, en, zh, ja (default: auto)",
     "cli_epilog": (
         "TOC file format (one entry per line):\n"
         "    Chapter 1 Introduction, 12\n"
@@ -388,7 +390,7 @@ STRINGS["en"] = {
     "btn_open_txt": "Open text file…",
     "btn_example": "Fill example",
     "btn_clear": "Clear",
-    "toc_drop_hint": "You can also drop a text file onto the window",
+    "toc_drop_hint": "You can also drop a text file on the window",
     "sec_settings": "Settings",
     "lbl_offset": "Page offset",
     "offset_hint": "if book page 1 is PDF page 9, enter 8",
@@ -528,7 +530,7 @@ STRINGS["zh"] = {
     "cli_encoding": "目录文件编码（默认：自动识别）",
     "cli_keep": "保留 PDF 已有书签并追加，而不是替换",
     "cli_dry": "只解析并显示结果，不写入 PDF",
-    "cli_lang": "显示语言：ko、en、zh（默认：自动）",
+    "cli_lang": "显示语言：ko、en、zh、ja（默认：自动）",
     "cli_epilog": (
         "目录文件格式（每行一项）：\n"
         "    第1章 绪论, 12\n"
@@ -619,6 +621,185 @@ STRINGS["zh"] = {
         "    2.1 方法, 6\n"
         "    2.2 结果, 8\n"
         "第3章 结论, 9\n"
+    ),
+}
+
+STRINGS["ja"] = {
+    # ---- 새 버전 확인
+    "opt_update_check": "新しいバージョンを確認",
+    "update_available": "新しいバージョン {latest} が出ています（現在 {current}）",
+    "btn_update": "更新",
+    "btn_later": "後で",
+    # ---- 의견 보내기
+    "btn_feedback": "ご意見を送る",
+    "feedback_failed": "ブラウザーを開けませんでした。下のアドレスをコピーしてブラウザーのアドレス欄に貼り付けると、ログインなしでご意見を送れます。",
+    # ---- offset 자동 감지
+    "btn_detect": "自動検出",
+    "detect_start": "offset の自動検出: 本文から {n} ページを選んでページ番号を探します。",
+    "detect_progress": "ページ番号を探しています… {i}/{n}",
+    "detect_ok": "offset {offset:+d} が見つかりました。ページ番号が読めた {pages} ページのうち {votes} ページが同じ値を示しています{how}。",
+    "detect_how_text": "（PDF のテキスト層を使用）",
+    "detect_how_ocr": "（Windows OCR を使用）",
+    "detect_evidence": "    PDF {pdf} ページ目 = 本の {page} ページ",
+    "detect_applied": "offset 欄に {offset} を入れました。プレビューで 1～2 項目を確かめてください。",
+    "detect_kept": "目次の offset={current} と検出値 {found} が違います。目次の値をそのまま使います。検出値を使うには［自動検出］を押してください。",
+    "detect_fail_title": "offset を自動で見つけられませんでした",
+    "detect_fail_no_numbers": "ページ番号らしい数字が見つかりませんでした。ページ番号のない本か、文字が薄すぎる可能性があります。",
+    "detect_fail_inconsistent": "ページ番号の候補が互いに合いません（{votes}/{pages} ページが一致）。見開きを 1 枚でスキャンしたか、ページ番号が不規則な可能性があります。",
+    "detect_fail_ocr_unavailable": "この PDF にはテキスト層がなく、このパソコンでは Windows OCR を使えません。",
+    "detect_fail_no_pages": "PDF に調べられるページがありません。",
+    "detect_fail_hint": "PDF ビューアーで本の 1 ページ目が PDF の何ページ目かを確かめ、offset を直接入力してください。",
+    "detect_cancelled": "offset の自動検出を取り消しました。",
+    "detect_error": "自動検出中にエラーが起きました: {err}",
+    "cli_auto_offset": "スキャン画像のページ番号を読んで offset を自動で求める（--offset を指定すると無視）",
+    "cli_detect_differs": "目次ファイルの offset={file} の代わりに、自動検出した {found} を使います。",
+    # ---- 목차 파일 읽기
+    "read_err": "目次ファイルを読み込めません: {path}\n      （{err}）",
+    "empty_file": "目次ファイルが空です: {name}",
+    "decode_fail": "目次ファイルを「{enc}」エンコーディングで読み込めませんでした: {err}",
+    "toc_is_pdf": "「{name}」は PDF ファイルです。目次にはテキスト（.txt）ファイルを指定してください。",
+    "toc_is_binary": "「{name}」はテキストファイルではないようです（画像、Word 文書、圧縮ファイルなど）。\n      メモ帳で作った .txt ファイルを指定してください。",
+    "unknown_encoding": "「{name}」のエンコーディングがわかりません。\n      メモ帳の「名前を付けて保存」で、エンコードを UTF-8 にして保存し直してください。",
+    # ---- 파싱
+    "line_fmt": "{n} 行目: {reason}\n      → {raw}",
+    "hint_fmt": "\n      ※ {hint}",
+    "offset_not_int": "offset の値が整数ではありません。",
+    "offset_hint": "例）offset=8",
+    "range_warn": "{n} 行目「{title}」: ページが {a}-{b} の範囲で書かれているため、前の数字 {page} を使いました。",
+    "roman_reason": "ローマ数字のページ番号（「{roman}」）には対応していません。",
+    "roman_hint": "PDF ビューアーで実際のページ番号を確かめてアラビア数字で書くか、この行を削除してください",
+    "no_page": "行末にページ番号が見つかりません。",
+    "example_hint": "例）第1章 序論, 12",
+    "no_title": "タイトルがありません（数字だけの行です）。",
+    "page_lt_1": "ページ番号は 1 以上にしてください。",
+    "commented_entry": "{n} 行目は # で始まるため、コメントとして読み飛ばしました: {text}",
+    "multi_offset": "offset の行が {k} 個あります（{lines} 行目）。最後の値 {value} を使います。",
+    "parse_head": "目次のうち {n} 行を読み取れませんでした。",
+    "only_first": "（最初の {m} 件のみ表示）",
+    "no_entries": "目次の項目が一つもありません。\n      ファイルが空か、すべての行がコメント（#）か offset 行です。\n      {example}",
+    # ---- 검증
+    "val_too_big": "{n} 行目「{title}」: {page} ページ + offset {offset} = PDF {pdf} ページ目 → PDF は {total} ページまでです。",
+    "val_too_small": "{n} 行目「{title}」: {page} ページ + offset {offset} = PDF {pdf} ページ目 → 1 ページ目より前です。",
+    "val_backwards": "{n} 行目「{title}」（{page} ページ）が前の項目「{prev}」（{prevpage} ページ）より前にあります。書き間違いがないか確かめてください。",
+    "val_head": "{n} 個の項目が PDF のページ範囲（1～{total}）から外れています。",
+    "val_all_big": "\n      すべての項目が最終ページを超えています。offset（{offset}）が大きすぎるか、別の PDF の可能性があります。",
+    "val_all_small": "\n      すべての項目が 1 ページ目より前です。offset（{offset}）が小さすぎます。",
+    "val_max_hint": "\n      最大のページ番号は {n} 行目「{title}」の {page} ページです。offset かこの行のページ番号を確かめてください。",
+    "tree_line": "（本の {page} ページ -> PDF {pdf} ページ目）",
+    # ---- PDF
+    "pdf_missing": "PDF ファイルがありません: {path}",
+    "pdf_read_err": "PDF ファイルを読み込めません: {path}\n      （{err}）",
+    "pdf_empty": "「{name}」は空のファイルです。",
+    "pdf_not_pdf": "「{name}」は PDF ファイルではありません（ファイルの先頭に %PDF の印がありません）。\n      拡張子だけ .pdf に変えたファイルか、壊れたファイルの可能性があります。",
+    "pdf_corrupt": "「{name}」を読み込めませんでした。ファイルが壊れている可能性があります。\n      （{err}）",
+    "pdf_encrypted_unsupported": "「{name}」は暗号化された PDF です。先にパスワードを解除してからお使いください。\n      （{err}）",
+    "pdf_encrypted": "「{name}」は開くのにパスワードが必要な PDF です。先にパスワードを解除してからお使いください。",
+    "pdf_count_fail": "「{name}」のページ数を数えられません。ファイルが壊れている可能性があります。\n      （{err}）",
+    "pdf_zero_pages": "「{name}」にはページがありません。",
+    "out_dir_missing": "出力先のフォルダーがありません: {dir}",
+    "out_locked": "出力ファイルに書き込めません: {path}\n      PDF ビューアーなど別のプログラムで開いている場合は、閉じてからやり直してください。",
+    "out_write_fail": "出力ファイルを書き込めませんでした: {path}\n      （{err}）",
+    # ---- CLI
+    "cli_desc": "テキストの目次ファイルから PDF にしおりを入れます。",
+    "cli_pdf": "元の PDF",
+    "cli_toc": "目次のテキストファイル",
+    "cli_out": "出力 PDF（既定: 元の名前_toc.pdf）",
+    "cli_offset": "PDF のページ = 本のページ + offset。例: 本の 1 ページ目が PDF の 9 ページ目なら --offset 8。目次ファイル内の offset= 行より優先します。",
+    "cli_encoding": "目次ファイルのエンコーディング（既定: 自動判別）",
+    "cli_keep": "PDF にもとからあるしおりを消さずに、後ろに追加する",
+    "cli_dry": "PDF を書き出さず、読み取り結果だけを表示する",
+    "cli_lang": "表示言語: ko, en, zh, ja（既定: 自動）",
+    "cli_epilog": (
+        "目次ファイルの書き方（1 行に 1 項目）:\n"
+        "    第1章 序論, 12\n"
+        "    第2章 背景, 25\n"
+        "      2.1 歴史, 26           <- 字下げすると下位の項目\n"
+        "      2.2 現状, 31\n"
+        "    第3章 結論 p.40\n\n"
+        "    # で始まる行はコメント。空行は無視します。\n"
+        "    offset=8                <- 本のページ番号と PDF のページ番号の差（省略可）"
+    ),
+    "cli_toc_missing": "目次ファイルがありません: {path}",
+    "cli_error": "エラー: ",
+    "cli_warn": "警告: ",
+    "cli_summary": "PDF: {pdf}  （{total} ページ）   offset: {offset:+d}   項目: {n} 個",
+    "cli_dry_note": "\n（dry-run）PDF は書き出していません。",
+    "cli_same": "出力ファイルが元のファイルと同じです。-o で別の名前を指定してください。",
+    "cli_done": "\n完了: {path}",
+    # ---- GUI
+    "app_title": "PDF 目次しおり",
+    "app_subtitle": "スキャンした本の PDF にしおりを入れて、読みたい章へすぐ移動できるようにします。",
+    "lbl_language": "言語",
+    "sec_pdf": "PDF",
+    "sec_pdf_hint_dnd": "ドラッグ＆ドロップまたは参照",
+    "sec_pdf_hint_nodnd": "［参照］で選択",
+    "pdf_drop_hint": "PDF ファイルをここにドロップしてください",
+    "pdf_click_hint": "クリックして PDF を選んでください",
+    "pdf_pages": "{name}\n{n} ページ",
+    "btn_browse": "参照…",
+    "sec_toc": "目次",
+    "sec_toc_hint": "1 行に 1 項目:  第1章 タイトル, 12   ·   字下げで下位の項目",
+    "btn_open_txt": "テキストファイルを開く…",
+    "btn_example": "例を入れる",
+    "btn_clear": "消去",
+    "toc_drop_hint": "テキストファイルをドロップしても開けます",
+    "sec_settings": "設定",
+    "lbl_offset": "ページのずれ (offset)",
+    "offset_hint": "本の 1 ページ目が PDF の 9 ページ目なら 8",
+    "lbl_output": "出力ファイル",
+    "btn_change": "変更…",
+    "btn_preview": "プレビュー",
+    "btn_build": "PDF を作成",
+    "sec_result": "結果",
+    "sec_result_hint": "［プレビュー］か［PDF を作成］を押すとここに表示されます",
+    "dlg_pdf": "元の PDF を選択",
+    "dlg_toc": "目次のテキストファイルを選択",
+    "dlg_out": "出力 PDF",
+    "ft_all": "すべてのファイル",
+    "ft_text": "テキスト",
+    "log_pdf": "PDF: {path}  （{n} ページ）",
+    "warn_few_pages": "ページが {n} ページしかありません。本全体の PDF か確かめてください。",
+    "warn_multi_pdf": "PDF を {n} 個ドロップしました。最初の 1 個（{name}）だけを使い、残りは無視します。一度に 1 冊ずつ処理します。",
+    "err_is_dir": "「{name}」はフォルダーです。PDF ファイルか目次のテキストファイルをドロップしてください。",
+    "err_not_found": "「{path}」が見つかりません。",
+    "err_pdf_open": "PDF を開けません",
+    "err_toc_read": "目次ファイルを読み込めません",
+    "warn_not_txt": "「{name}」は .txt ではありませんが、テキストとして読み込みました。内容がおかしければ確かめてください。",
+    "log_toc": "目次ファイル: {path}",
+    "warn_toc_format": "目次の書き方に問題があります。［プレビュー］を押すと、どの行が問題か確かめられます。",
+    "log_offset_applied": "ファイル内の offset={n} を適用しました。",
+    "err_no_pdf": "PDF がありません",
+    "err_no_pdf_detail": "1 番の欄に PDF をドロップするか、［参照…］で選んでください。",
+    "err_toc_empty": "目次が空です",
+    "err_toc_empty_detail": "2 番の欄に目次を入力するか、テキストファイルを開いてください。［例を入れる］で書き方を確かめられます。",
+    "err_toc_format": "目次の書き方のエラー",
+    "err_offset": "offset のエラー",
+    "err_offset_detail": "「{v}」は整数ではありません。例）0、8、-2",
+    "err_range": "ページ番号が PDF の範囲を外れています",
+    "summary": "項目 {n} 個  ·  offset {offset:+d}  ·  PDF {total} ページ",
+    "tree_gui": "{title}  ->  PDF {pdf} ページ目",
+    "err_same": "出力ファイルが元のファイルと同じです",
+    "err_same_detail": "元のファイルを上書きしないよう、別の名前を指定してください。［変更…］を押してください。",
+    "dlg_overwrite_title": "上書き",
+    "dlg_overwrite": "{name} はすでにあります。上書きしますか？",
+    "log_cancelled": "取り消しました。",
+    "err_build": "PDF を作成できませんでした",
+    "err_unexpected": "予期しないエラー",
+    "log_done": "完了: {path}",
+    "dlg_done_title": "完了",
+    "dlg_done": "しおりを入れました。\n\n{path}",
+    "example_toc": (
+        "# 1 行に 1 項目: タイトル, ページ\n"
+        "# 字下げすると下位の項目\n"
+        "offset=0\n\n"
+        "はじめに, 1\n"
+        "第1章 序論, 2\n"
+        "    1.1 背景, 3\n"
+        "    1.2 目的, 4\n"
+        "第2章 本論, 5\n"
+        "    2.1 方法, 6\n"
+        "    2.2 結果, 8\n"
+        "第3章 結論, 9\n"
     ),
 }
 

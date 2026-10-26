@@ -1,6 +1,6 @@
-# PDF 목차 넣기 · PDF TOC Bookmarks · PDF 目录书签
+# PDF 목차 넣기 · PDF TOC Bookmarks · PDF 目录书签 · PDF 目次しおり
 
-[한국어](#한국어) · [English](#english) · [中文](#中文)
+[한국어](#한국어) · [English](#english) · [中文](#中文) · [日本語](#日本語)
 
 **[⬇ Download pdf_toc_add.exe (Windows)](https://github.com/microhan1/pdf-toc-add/releases/latest)** · No installation needed
 
@@ -12,7 +12,7 @@
 
 스캔한 책 PDF는 북마크가 없어서 원하는 장으로 바로 못 건너뜁니다.
 텍스트 파일에 `제목, 쪽수` 를 적어 주면 그대로 PDF 북마크(아웃라인)로 박아 주는 툴입니다.
-화면과 메시지는 한국어, 영어, 중국어를 지원합니다.
+화면과 메시지는 한국어, 영어, 중국어, 일본어를 지원합니다.
 
 ### exe 로 쓰기 (설치 불필요)
 
@@ -47,7 +47,7 @@ offset=8
 
 ```bash
 pip install -r requirements.txt
-python pdf_toc_add.py 책.pdf 목차.txt [--offset 8 | --auto-offset] [-o 결과.pdf] [--dry-run] [--lang ko|en|zh]
+python pdf_toc_add.py 책.pdf 목차.txt [--offset 8 | --auto-offset] [-o 결과.pdf] [--dry-run] [--lang ko|en|zh|ja]
 ```
 
 ### 오류 처리
@@ -91,7 +91,7 @@ offset 자동 감지는 정답을 아는 합성 스캔 책으로 검증합니다
 
 Scanned book PDFs have no bookmarks, so you cannot jump to a chapter.
 This tool takes a plain-text list of `title, page` lines and writes them into the PDF as bookmarks (an outline).
-The interface and messages are available in Korean, English and Chinese.
+The interface and messages are available in Korean, English, Chinese and Japanese.
 
 ### Using the exe (no install)
 
@@ -126,7 +126,7 @@ Chapter 3 Conclusion p.40
 
 ```bash
 pip install -r requirements.txt
-python pdf_toc_add.py book.pdf toc.txt [--offset 8 | --auto-offset] [-o out.pdf] [--dry-run] [--lang ko|en|zh]
+python pdf_toc_add.py book.pdf toc.txt [--offset 8 | --auto-offset] [-o out.pdf] [--dry-run] [--lang ko|en|zh|ja]
 ```
 
 ### Error handling
@@ -166,7 +166,7 @@ Finished the book? Log it on [Chaekgalpi Library](https://chaekgalpi.co.kr/en/to
 
 扫描的图书 PDF 没有书签，无法直接跳转到某一章。
 本工具读取写有 `标题, 页码` 的文本文件，并将其写入 PDF 作为书签（大纲）。
-界面和提示支持韩语、英语和中文。
+界面和提示支持韩语、英语、中文和日语。
 
 ### 使用 exe（无需安装）
 
@@ -201,7 +201,7 @@ offset=8
 
 ```bash
 pip install -r requirements.txt
-python pdf_toc_add.py book.pdf toc.txt [--offset 8 | --auto-offset] [-o out.pdf] [--dry-run] [--lang ko|en|zh]
+python pdf_toc_add.py book.pdf toc.txt [--offset 8 | --auto-offset] [-o out.pdf] [--dry-run] [--lang ko|en|zh|ja]
 ```
 
 ### 错误处理
@@ -234,3 +234,78 @@ python -m PyInstaller --onefile --windowed --name pdf_toc_add pdf_toc_add.py
 所有字符串都在 [i18n.py](i18n.py) 中。要新增语言，在 `STRINGS` 中添加一张表，并在 `LANGS` 和 `LANG_NAMES` 中登记即可。
 
 读完这本书后，可以在 [书签图书馆（Chaekgalpi Library）](https://chaekgalpi.co.kr/tools/pdftoc?utm_source=github&utm_medium=referral&utm_campaign=tool_cta&utm_content=pdftoc) 记录下来——这是一个记录读过的书和读书笔记的网页服务（仅韩语）。
+
+---
+
+## 日本語
+
+スキャンした本の PDF にはしおり（ブックマーク）がないため、読みたい章へすぐ移動できません。
+テキストファイルに `タイトル, ページ` を書いておくと、そのまま PDF のしおり（アウトライン）として入れるツールです。
+画面とメッセージは韓国語、英語、中国語、日本語に対応しています。
+
+### exe で使う（インストール不要）
+
+[Releases](https://github.com/microhan1/pdf-toc-add/releases/latest) から `pdf_toc_add.exe` をダウンロードし、ダブルクリックするとウィンドウが開きます。署名のない exe のため、初回に Windows SmartScreen の警告が出たら「詳細情報 → 実行」を押してください。
+
+- PDF はウィンドウに**ドラッグ＆ドロップ**するか、［参照…］で選びます。exe のアイコンに PDF をドロップしてもかまいません。
+- 目次は**テキストファイルをドロップ**するか、ボタンで開きます。入力欄に**直接入力**してもかまいません。
+- PDF を入れると **offset を自動で探します。** スキャン画像のページ番号を Windows 内蔵の OCR で読み取ります。PDF にテキスト層があればそれを使います。確実でないときは値を入れないので、その場合は直接入力してください。
+- ［プレビュー］で対応するページを確かめてから［PDF を作成］を押します。
+- 言語は右上で切り替えます。Windows の表示言語に合わせて自動で選ばれ、切り替えると次回も覚えています。
+
+詳しい説明は [usage.html](usage.html) をご覧ください（韓国語・英語・中国語）。
+
+### 目次ファイルの書き方
+
+```
+offset=8
+
+はじめに, 1
+第1章 序論, 12
+    1.1 背景, 13
+第2章 本論 ...... 25
+第3章 結論 p.40
+```
+
+- 行末の数字がページ番号です。カンマ、タブ、点線、`p.`、`頁` はあってもなくてもかまいません（`ページ` は未対応なので、`12ページ` は `12` と書いてください）。
+- 字下げすると下位の項目になります。`#` で始まる行と空行は無視します。
+- `offset=8` は本のページ番号と PDF のページ番号の差です。本の 1 ページ目が PDF の 9 ページ目なら 8。ウィンドウの［自動検出］や `--auto-offset` で探すこともできます。
+- UTF-8、UTF-16、CP949、GB18030 を自動判別します。Shift_JIS は自動判別できないため、メモ帳で UTF-8 に保存し直すか、コマンドラインでは `--encoding cp932` を指定してください。
+
+### コマンドライン
+
+```bash
+pip install -r requirements.txt
+python pdf_toc_add.py book.pdf toc.txt [--offset 8 | --auto-offset] [-o out.pdf] [--dry-run] [--lang ko|en|zh|ja]
+```
+
+### エラー処理
+
+- 問題のある行をまとめて、行番号・元の文・直し方を表示します。GUI ではその行を赤く示します。
+- 検出するもの: ページ番号のない行、ローマ数字のページ番号、数字だけの行、ページ 0、正しくない offset の値、PDF の範囲を外れたページ、目次の欄に入れた PDF・画像・Word ファイル、PDF でないファイル、壊れた PDF やパスワード付きの PDF、ほかのプログラムが開いている出力ファイル、存在しない出力フォルダー。
+- 警告だけのもの: ページの範囲（`12-15` は 12 を使用）、前の項目より小さいページ番号、`#` でコメントになった項目、offset 行の重複。
+
+### 新しいバージョンの確認
+
+起動時に新しいバージョンがあるか確かめるため、ツール名とバージョンだけを Chaekgalpi のサーバー（chaekgalpi.co.kr）に送ります。ファイルは送りません。確認は 1 日 1 回だけで、設定でオフにできます。
+
+- 新しいバージョンがあると、ウィンドウの一番下に 1 行で知らせます。ダイアログは出さないので、作業を妨げません。
+- 新しいバージョンを自動でダウンロードしたり置き換えたりはしません。［更新］を押すとツールの紹介ページ（英語）が開くだけです。
+- ［後で］を押すと、そのバージョンは二度と知らせません。「3 設定」の**新しいバージョンを確認**のチェックを外すと、確認そのものをしません。
+- 確認に失敗したとき（インターネットにつながっていない、サーバーが応答しないなど）は何も言わずに続けます。設定は `%APPDATA%\pdf_toc_add\config.json` に保存されます。
+
+### ご意見を送る
+
+うまく動かないこと・使いにくいこと・ほしい機能は、プログラムの「3 設定」にある**ご意見を送る**を押すか、https://chaekgalpi.co.kr/en/tools/pdftoc#feedback からログインなしで送れます（英語のページです。プログラムはブラウザーでそのページを開くだけです）。[GitHub Issues](https://github.com/microhan1/pdf-toc-add/issues) もこれまでどおり受け付けます。
+
+### 開発
+
+```bash
+pip install -r requirements.txt pytest pyinstaller
+python -m pytest tests -q
+python -m PyInstaller --onefile --windowed --name pdf_toc_add pdf_toc_add.py
+```
+
+文字列はすべて [i18n.py](i18n.py) にまとまっています。言語を増やすには `STRINGS` に表を一つ足し、`LANGS` と `LANG_NAMES` に登録します。
+
+本を読み終えたら、[Chaekgalpi Library](https://chaekgalpi.co.kr/en/tools/pdftoc?utm_source=github&utm_medium=referral&utm_campaign=tool_cta&utm_content=pdftoc) に記録してみてください。読んだ本と読書記録を残せるウェブサービスです（ツールの紹介ページは英語、読書記録サービス自体は韓国語です）。

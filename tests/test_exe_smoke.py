@@ -10,6 +10,7 @@ exe 는 conftest 의 차단이 닿지 않으므로 죽은 프록시(127.0.0.1:9)
 from __future__ import annotations
 
 import ctypes
+import json
 import os
 import subprocess
 import sys
@@ -72,9 +73,28 @@ def visible_windows(pids: set[int]) -> list[int]:
     return found
 
 
-def test_window_opens_and_closes_with_a_dead_proxy(tmp_path):
+def window_title(hwnd: int) -> str:
+    buf = ctypes.create_unicode_buffer(512)
+    ctypes.windll.user32.GetWindowTextW(hwnd, buf, 512)
+    return buf.value
+
+
+# 창 제목은 언어마다 다르다(i18n 의 app_title). ja 는 언어 선택에서 일본어로 바꾼 뒤 다시 켠 경우처럼
+# 설정 파일에 lang=ja 만 두고(환경변수 없이) 띄운다.
+TITLES = {"ko": "PDF 목차 넣기", "en": "PDF TOC Bookmarks", "zh": "PDF 目录书签", "ja": "PDF 目次しおり"}
+
+
+@pytest.mark.parametrize("lang,how", [("ko", "env"), ("ja", "env"), ("ja", "saved"), ("en", "saved"),
+                                      ("zh", "saved")])
+def test_window_opens_and_closes_with_a_dead_proxy(tmp_path, lang, how):
     env = dict(os.environ, HTTP_PROXY=DEAD_PROXY, HTTPS_PROXY=DEAD_PROXY, http_proxy=DEAD_PROXY,
-               https_proxy=DEAD_PROXY, NO_PROXY="", APPDATA=str(tmp_path), PDF_TOC_LANG="ko")
+               https_proxy=DEAD_PROXY, NO_PROXY="", APPDATA=str(tmp_path))
+    env.pop("PDF_TOC_LANG", None)
+    if how == "env":
+        env["PDF_TOC_LANG"] = lang
+    else:
+        (tmp_path / "pdf_toc_add").mkdir()
+        (tmp_path / "pdf_toc_add" / "config.json").write_text(json.dumps({"lang": lang}), encoding="utf-8")
     proc = subprocess.Popen([EXE], env=env)
     try:
         hwnds: list[int] = []
@@ -83,6 +103,7 @@ def test_window_opens_and_closes_with_a_dead_proxy(tmp_path):
             time.sleep(0.5)
             hwnds = visible_windows(process_tree(proc.pid))
         assert hwnds, "창이 뜨지 않았다"
+        assert TITLES[lang] in [window_title(h) for h in hwnds]
         time.sleep(4)  # 새 버전 확인(1.5초 뒤)이 죽은 프록시에 막혀 조용히 끝날 시간
         assert proc.poll() is None, "창이 뜬 뒤 저절로 죽었다"
         for h in hwnds:

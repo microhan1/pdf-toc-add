@@ -2,7 +2,7 @@
 """pdf_toc_add.py - 텍스트 목차 파일을 읽어 PDF에 북마크(아웃라인)를 넣는 툴.
 Add bookmarks to a PDF from a plain-text table of contents.  根据文本目录为 PDF 添加书签。
 
-    python pdf_toc_add.py book.pdf toc.txt [-o out.pdf] [--offset 8] [--dry-run] [--lang ko|en|zh]
+    python pdf_toc_add.py book.pdf toc.txt [-o out.pdf] [--offset 8] [--dry-run] [--lang ko|en|zh|ja]
     python pdf_toc_add.py                      (no arguments: GUI)
 """
 

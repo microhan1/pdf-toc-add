@@ -1,4 +1,4 @@
-"""pdf_toc_gui.py - PDF 목차 넣기 GUI (한국어 / English / 中文).
+"""pdf_toc_gui.py - PDF 목차 넣기 GUI (한국어 / English / 中文 / 日本語).
 
 - PDF: 창에 끌어다 놓거나 [찾아보기]
 - 목차: 텍스트 파일을 끌어다 놓거나 [파일 열기], 또는 입력칸에 직접 타이핑
@@ -11,7 +11,7 @@ import sys
 import threading
 import tkinter as tk
 from pathlib import Path
-from tkinter import filedialog, messagebox, ttk
+from tkinter import filedialog, font as tkfont, messagebox, ttk
 
 import offset_detect
 import pdf_toc_add as core
@@ -31,6 +31,8 @@ FONT = (FONT_FAMILY, 10)
 FONT_SMALL = (FONT_FAMILY, 9)
 FONT_HEAD = (FONT_FAMILY, 11, "bold")
 FONT_TITLE = (FONT_FAMILY, 15, "bold")
+# 맑은 고딕에는 일본어 신자체(変·読·込 등)와 장음 기호(ー)가 없다. 일본어 화면은 일본어 글꼴로 그린다.
+LANG_FONTS = {"ja": ("Yu Gothic UI", "Meiryo UI", "Meiryo", "MS UI Gothic")}
 
 BG = "#ffffff"
 BG_SOFT = "#f5f7fa"
@@ -79,7 +81,6 @@ class App:
         root.rowconfigure(2, weight=3)  # 목차 입력칸
         root.rowconfigure(4, weight=2)  # 결과
 
-        self._style()
         self._build_all()
 
         if _DND:
@@ -96,6 +97,20 @@ class App:
             self.load_toc_file(Path(toc))
 
     # ------------------------------------------------------------ 스타일 / 공통 위젯
+
+    def _use_lang_font(self) -> None:
+        """화면 언어에 맞는 글꼴을 고른다. 후보가 하나도 없으면 맑은 고딕(Tk 가 빠진 글자만 대신 그린다)."""
+        global FONT_FAMILY, FONT, FONT_SMALL, FONT_HEAD, FONT_TITLE
+        family = "Malgun Gothic"
+        wanted = LANG_FONTS.get(get_lang())
+        if wanted:
+            installed = set(tkfont.families(self.root))
+            family = next((f for f in wanted if f in installed), family)
+        FONT_FAMILY = family
+        FONT = (family, 10)
+        FONT_SMALL = (family, 9)
+        FONT_HEAD = (family, 11, "bold")
+        FONT_TITLE = (family, 15, "bold")
 
     def _style(self) -> None:
         st = ttk.Style()
@@ -154,6 +169,8 @@ class App:
     # ------------------------------------------------------------ 화면 구성
 
     def _build_all(self) -> None:
+        self._use_lang_font()
+        self._style()
         self.root.title(tr("app_title"))
         self._build_header()
         self._build_pdf_zone()
@@ -508,7 +525,7 @@ class App:
 
     def _update_open(self) -> None:
         """내려받지 않고 툴 소개 페이지만 연다. 책갈피 주소일 때만.
-        영어·중국어 화면이면 영어 판 페이지가 있을 때 그쪽을 연다."""
+        영어·중국어·일본어 화면이면 영어 판 페이지가 있을 때 그쪽을 연다."""
         import webbrowser
         info = self._update_info
         if info is not None:
