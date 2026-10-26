@@ -65,6 +65,10 @@ python pdf_toc_add.py 책.pdf 목차.txt [--offset 8 | --auto-offset] [-o 결과
 - [다음에]를 누르면 그 버전은 다시 알리지 않습니다. 「3 설정」의 **새 버전 확인** 체크를 끄면 아예 묻지 않습니다.
 - 확인이 실패하면(인터넷이 없거나 서버가 조용하면) 아무 말 없이 지나갑니다. 설정은 `%APPDATA%\pdf_toc_add\config.json` 에 저장됩니다.
 
+### 의견 보내기
+
+안 되는 것·불편한 것·바라는 기능은 프로그램의 「3 설정」에 있는 **의견 보내기**를 누르거나 https://chaekgalpi.co.kr/tools/pdftoc#feedback 에서 로그인 없이 보낼 수 있습니다(프로그램은 브라우저로 그 페이지를 열기만 합니다). [GitHub Issues](https://github.com/microhan1/pdf-toc-add/issues) 도 그대로 받습니다.
+
 ### 개발
 
 ```bash
@@ -140,6 +144,10 @@ On start the tool sends only its name and version to the Chaekgalpi server (chae
 - **Later** silences that version; unticking **Check for updates** in section 3 stops the question altogether.
 - A failed check (offline, or a quiet server) passes silently. Settings live in `%APPDATA%\pdf_toc_add\config.json`.
 
+### Feedback
+
+Tell us what's broken or missing with **Send feedback** in section 3 of the window, or at https://chaekgalpi.co.kr/en/tools/pdftoc#feedback — no sign-in needed (the tool only opens that page in your browser). [GitHub Issues](https://github.com/microhan1/pdf-toc-add/issues) are still welcome.
+
 ### Development
 
 ```bash
@@ -210,6 +218,10 @@ python pdf_toc_add.py book.pdf toc.txt [--offset 8 | --auto-offset] [-o out.pdf]
 - 不会自动下载或替换程序。点击 **更新** 只会打开工具介绍页面。
 - 点击 **以后** 后不再提示该版本；在「3 设置」中取消勾选 **检查新版本** 即可完全关闭。
 - 检查失败（无网络或服务器无响应）时静默跳过。设置保存在 `%APPDATA%\pdf_toc_add\config.json`。
+
+### 发送反馈
+
+问题或建议可以点击窗口「3 设置」中的 **发送反馈**，或在 https://chaekgalpi.co.kr/en/tools/pdftoc#feedback 提交，无需登录（程序只会用浏览器打开该页面）。也照常接受 [GitHub Issues](https://github.com/microhan1/pdf-toc-add/issues)。
 
 ### 开发
 

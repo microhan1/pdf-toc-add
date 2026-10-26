@@ -114,6 +114,7 @@ class App:
         st.configure("TEntry", padding=4)
         st.configure("TCombobox", padding=3)
         st.configure("Sep.TFrame", background=BORDER)
+        st.configure("Link.TLabel", foreground=ACCENT, font=(FONT_FAMILY, 9, "underline"))
 
     def _section(self, row: int, number: str, title: str, hint: str = "", grow: bool = False) -> ttk.Frame:
         """번호 배지 + 제목 헤더가 붙은 섹션을 만들고 본문 프레임을 돌려준다."""
@@ -241,8 +242,14 @@ class App:
 
         if not hasattr(self, "var_update_check"):
             self.var_update_check = tk.BooleanVar(value=self.prefs.update_check)
-        ttk.Checkbutton(body, text=tr("opt_update_check"), variable=self.var_update_check,
-                        command=self._on_update_toggle).grid(row=2, column=0, columnspan=2, sticky="w", pady=(10, 0))
+        site = ttk.Frame(body)
+        site.grid(row=2, column=0, columnspan=2, sticky="w", pady=(10, 0))
+        ttk.Checkbutton(site, text=tr("opt_update_check"), variable=self.var_update_check,
+                        command=self._on_update_toggle).pack(side="left")
+        # 「의견 보내기」: 툴 페이지의 의견 칸을 브라우저로 열기만 하는 작은 링크
+        self.feedback_link = ttk.Label(site, text=tr("btn_feedback"), style="Link.TLabel", cursor="hand2")
+        self.feedback_link.pack(side="left", padx=(18, 0))
+        self.feedback_link.bind("<Button-1>", lambda _e: self.open_feedback())
 
         btns = ttk.Frame(body)
         btns.grid(row=3, column=0, columnspan=2, sticky="e", pady=(10, 4))
@@ -518,6 +525,19 @@ class App:
             self.prefs.update_check_skipped = self._update_info.latest  # 더 새 버전이 나오면 다시 알린다
             self._save_prefs()
         self._hide_update_notice()
+
+    def open_feedback(self) -> None:
+        """「의견 보내기」: 툴 페이지의 의견 칸을 브라우저로 연다. 프로그램은 서버에 아무것도 보내지 않는다.
+        브라우저를 열지 못하면 결과 칸에 주소를 남겨 복사할 수 있게 한다(입력·설정은 그대로)."""
+        import webbrowser
+        url = update_check.feedback_url(version.UPDATE_SLUG, version.APP_VERSION, get_lang())
+        try:
+            opened = webbrowser.open(url)
+        except Exception:  # webbrowser.Error, OSError 등: 창이 죽지 않게
+            opened = False
+        if opened is False:
+            self.write_log(tr("feedback_failed"), "warn")
+            self.write_log(url)
 
     def _on_update_toggle(self) -> None:
         self._save_prefs()

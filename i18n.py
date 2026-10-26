@@ -103,6 +103,9 @@ STRINGS["ko"] = {
     "update_available": "새 버전이 나왔습니다: {latest} (현재 {current})",
     "btn_update": "업데이트",
     "btn_later": "다음에",
+    # ---- 의견 보내기
+    "btn_feedback": "의견 보내기",
+    "feedback_failed": "브라우저를 열지 못했습니다. 아래 주소를 복사해 브라우저 주소창에 붙여 넣으면 로그인 없이 의견을 보낼 수 있습니다.",
     # ---- offset 자동 감지
     "btn_detect": "자동 감지",
     "detect_start": "offset 자동 감지: 책 본문에서 {n}쪽을 골라 쪽 번호를 찾습니다.",
@@ -279,6 +282,9 @@ STRINGS["en"] = {
     "update_available": "Version {latest} is available (current {current})",
     "btn_update": "Update",
     "btn_later": "Later",
+    # ---- 의견 보내기
+    "btn_feedback": "Send feedback",
+    "feedback_failed": "Could not open your browser. Copy the address below into your browser's address bar to send feedback (no sign-in needed).",
     # ---- offset 자동 감지
     "btn_detect": "Auto-detect",
     "detect_start": "Offset auto-detect: checking page numbers on {n} pages from the body of the book.",
@@ -449,6 +455,9 @@ STRINGS["zh"] = {
     "update_available": "有新版本 {latest}（当前 {current}）",
     "btn_update": "更新",
     "btn_later": "以后",
+    # ---- 의견 보내기
+    "btn_feedback": "发送反馈",
+    "feedback_failed": "无法打开浏览器。请复制下面的地址并粘贴到浏览器地址栏，无需登录即可发送反馈。",
     # ---- offset 자동 감지
     "btn_detect": "自动检测",
     "detect_start": "自动检测 offset：从正文中选取 {n} 页查找页码。",

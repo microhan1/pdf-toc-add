@@ -36,6 +36,20 @@ class UpdateInfo:
         return self.url_en if (lang in ("en", "zh") and self.url_en) else self.url
 
 
+def feedback_url(slug: str, version: str | None, lang: str | None) -> str:
+    """「의견 보내기」가 브라우저로 여는 툴 페이지의 의견 칸 주소. 코드 상수로만 만든다
+    (설정·서버 답에서 받지 않는다). 프로그램은 이 주소를 열기만 하고 아무것도 보내지 않는다.
+    영어·일본어·중국어 화면은 영어 판(/en)을, 한국어와 모르는 언어는 한국어 판을 연다
+    (일본어·중국어 페이지는 없다). 버전이 비면 v 를 뺀다."""
+    base = (lang or "").strip().lower().replace("_", "-").split("-")[0]
+    prefix = "en/" if base in ("en", "ja", "zh") else ""
+    query = "utm_source=app&utm_medium=feedback"
+    v = (version or "").strip()
+    if v:
+        query += "&v=" + urllib.parse.quote(v, safe="")
+    return f"{SITE}{prefix}tools/{urllib.parse.quote(slug, safe='')}?{query}#feedback"
+
+
 def today() -> str:
     return datetime.date.today().isoformat()
 
