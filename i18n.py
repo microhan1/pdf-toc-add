@@ -108,6 +108,7 @@ STRINGS["ko"] = {
     # ---- 의견 보내기
     "btn_feedback": "의견 보내기",
     "feedback_failed": "브라우저를 열지 못했습니다. 아래 주소를 복사해 브라우저 주소창에 붙여 넣으면 로그인 없이 의견을 보낼 수 있습니다.",
+    "feedback_tip": "안 되는 것·불편한 것·바라는 기능을 알려 주세요(브라우저가 열립니다)",
     # ---- offset 자동 감지
     "btn_detect": "자동 감지",
     "detect_start": "offset 자동 감지: 책 본문에서 {n}쪽을 골라 쪽 번호를 찾습니다.",
@@ -287,6 +288,7 @@ STRINGS["en"] = {
     # ---- 의견 보내기
     "btn_feedback": "Send feedback",
     "feedback_failed": "Could not open your browser. Copy the address below into your browser's address bar to send feedback (no sign-in needed).",
+    "feedback_tip": "Tell us what's broken or missing (opens your browser)",
     # ---- offset 자동 감지
     "btn_detect": "Auto-detect",
     "detect_start": "Offset auto-detect: checking page numbers on {n} pages from the body of the book.",
@@ -460,6 +462,7 @@ STRINGS["zh"] = {
     # ---- 의견 보내기
     "btn_feedback": "发送反馈",
     "feedback_failed": "无法打开浏览器。请复制下面的地址并粘贴到浏览器地址栏，无需登录即可发送反馈。",
+    "feedback_tip": "告诉我们问题或建议（将打开浏览器）",
     # ---- offset 자동 감지
     "btn_detect": "自动检测",
     "detect_start": "自动检测 offset：从正文中选取 {n} 页查找页码。",
@@ -633,6 +636,7 @@ STRINGS["ja"] = {
     # ---- 의견 보내기
     "btn_feedback": "ご意見を送る",
     "feedback_failed": "ブラウザーを開けませんでした。下のアドレスをコピーしてブラウザーのアドレス欄に貼り付けると、ログインなしでご意見を送れます。",
+    "feedback_tip": "不具合・ご要望をお知らせください（ブラウザが開きます）",
     # ---- offset 자동 감지
     "btn_detect": "自動検出",
     "detect_start": "offset の自動検出: 本文から {n} ページを選んでページ番号を探します。",

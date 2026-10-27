@@ -75,8 +75,9 @@ def test_exact_address_per_language(lang, expected):
 
 
 @pytest.mark.parametrize("lang", [None, "", "fr", "de-DE", "xx", "  ", "kor"])
-def test_unknown_language_falls_back_to_korean(lang):
-    assert url(lang) == KO
+def test_unknown_language_goes_to_english_page(lang):
+    """시리즈 공통 규칙(10-27): ko 만 한국어 판, 나머지는 영어 판. 빈 값은 기본 화면 언어(영어)."""
+    assert url(lang) == EN
 
 
 @pytest.mark.parametrize("lang,expected", [

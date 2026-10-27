@@ -5,4 +5,4 @@ APP_VERSION 은 새 버전 확인 요청의 User-Agent 와 질의 문자열에 �
 
 APP_NAME = "PDF 목차 넣기"
 UPDATE_SLUG = "pdftoc"
-APP_VERSION = "1.1.3"
+APP_VERSION = "1.1.4"

@@ -18,6 +18,7 @@ from typing import Callable
 
 API = "https://chaekgalpi.co.kr/api/tools/{slug}/latest"
 SITE = "https://chaekgalpi.co.kr/"  # 알림은 이 사이트의 페이지만 연다
+DEFAULT_LANG = "en"  # 이 툴의 기본 화면 언어(i18n: 판별하지 못하거나 모르는 언어는 영어 화면)
 TIMEOUT = 4.0
 DELAY_MS = 1500
 POLL_MS = 100       # Tk 스레드가 답을 들여다보는 간격
@@ -31,19 +32,24 @@ class UpdateInfo:
     url: str
     url_en: str = ""   # 영어 판 툴 페이지. 서버가 주지 않으면 빈 문자열
 
-    def page_for(self, lang: str) -> str:
-        """화면 언어에 맞는 페이지. 영어·중국어·일본어 화면은 영어 판이 있으면 그쪽을 연다
+    def page_for(self, lang: str | None) -> str:
+        """화면 언어에 맞는 페이지. 한국어 화면만 한국어 판, 그 밖의 언어는 영어 판이 있으면 그쪽을 연다
         (중국어·일본어 판 툴 페이지는 없다)."""
-        return self.url_en if (lang in ("en", "zh", "ja") and self.url_en) else self.url
+        return self.url if (is_korean(lang) or not self.url_en) else self.url_en
+
+
+def is_korean(lang: str | None) -> bool:
+    """툴 페이지 언어 규칙(시리즈 공통): ko 로 시작하는 언어 코드만 한국어 판, 그 밖의 모든 언어 코드는
+    영어 판(/en). 언어 값이 None·빈 값이면 이 툴의 기본 화면 언어(DEFAULT_LANG)를 따른다."""
+    code = (lang or "").strip() or DEFAULT_LANG
+    return code.lower().replace("_", "-").split("-")[0] == "ko"
 
 
 def feedback_url(slug: str, version: str | None, lang: str | None) -> str:
     """「의견 보내기」가 브라우저로 여는 툴 페이지의 의견 칸 주소. 코드 상수로만 만든다
     (설정·서버 답에서 받지 않는다). 프로그램은 이 주소를 열기만 하고 아무것도 보내지 않는다.
-    영어·일본어·중국어 화면은 영어 판(/en)을, 한국어와 모르는 언어는 한국어 판을 연다
-    (일본어·중국어 페이지는 없다). 버전이 비면 v 를 뺀다."""
-    base = (lang or "").strip().lower().replace("_", "-").split("-")[0]
-    prefix = "en/" if base in ("en", "ja", "zh") else ""
+    한국어 화면만 한국어 판을, 그 밖의 언어는 영어 판(/en)을 연다(is_korean). 버전이 비면 v 를 뺀다."""
+    prefix = "" if is_korean(lang) else "en/"
     query = "utm_source=app&utm_medium=feedback"
     v = (version or "").strip()
     if v:

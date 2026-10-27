@@ -679,7 +679,7 @@ def test_feedback_url_for_ja():
 
 
 def test_version_was_bumped_once():
-    assert version.APP_VERSION == "1.1.3"
+    assert version.APP_VERSION == "1.1.4"
 
 
 # ------------------------------------------------------------------ g. 알 수 없는 언어·깨진 설정

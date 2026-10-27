@@ -53,6 +53,70 @@ PAD = 20
 TEXT_EXTS = {".txt", ".md", ".csv", ".text", ".toc", ".log"}
 
 
+class Tooltip:
+    """마우스를 올리면 위젯 아래에 작은 설명 상자를 띄운다(표준 tkinter 만). 프로그램 창과 화면 밖으로
+    나가지 않게 자리를 잡는다. 위젯이 없어지면(언어를 바꿔 다시 그릴 때) 함께 정리된다."""
+
+    DELAY_MS = 400
+    WRAP = 300  # 긴 문구는 이 폭에서 줄을 바꾼다
+
+    def __init__(self, widget: tk.Widget, text: str, font) -> None:
+        self.widget, self.text, self.font = widget, text, font
+        self.tip: tk.Toplevel | None = None
+        self._job: str | None = None
+        widget.bind("<Enter>", self._schedule, add="+")
+        widget.bind("<Leave>", self.hide, add="+")
+        # <Button-1> 바인딩이 따로 있으면 Tk 는 더 구체적인 그것만 부르므로 같은 순서열에도 덧붙인다
+        widget.bind("<ButtonPress>", self.hide, add="+")
+        widget.bind("<Button-1>", self.hide, add="+")
+        widget.bind("<Destroy>", self.hide, add="+")
+
+    def _schedule(self, _event=None) -> None:
+        self._cancel()
+        self._job = self.widget.after(self.DELAY_MS, self.show)
+
+    def _cancel(self) -> None:
+        if self._job is not None:
+            try:
+                self.widget.after_cancel(self._job)
+            except tk.TclError:
+                pass
+            self._job = None
+
+    def show(self) -> None:
+        self._job = None
+        if self.tip is not None or not self.widget.winfo_exists():
+            return
+        tip = tk.Toplevel(self.widget)
+        tip.withdraw()
+        tip.overrideredirect(True)
+        tk.Label(tip, text=self.text, font=self.font, justify="left", wraplength=self.WRAP,
+                 bg="#fffbe6", fg=FG, bd=0, padx=8, pady=4,
+                 highlightthickness=1, highlightbackground=BORDER).pack()
+        tip.update_idletasks()
+        w, h = tip.winfo_reqwidth(), tip.winfo_reqheight()
+        top = self.widget.winfo_toplevel()
+        x = self.widget.winfo_rootx()
+        y = self.widget.winfo_rooty() + self.widget.winfo_height() + 4
+        # 프로그램 창 오른쪽 끝을 넘지 않게, 그다음 화면 안에 들게
+        x = min(x, top.winfo_rootx() + top.winfo_width() - w - 4)
+        x = max(0, min(x, tip.winfo_screenwidth() - w))
+        if y + h > tip.winfo_screenheight():
+            y = self.widget.winfo_rooty() - h - 4
+        tip.geometry(f"+{x}+{max(0, y)}")
+        tip.deiconify()
+        self.tip = tip
+
+    def hide(self, _event=None) -> None:
+        self._cancel()
+        if self.tip is not None:
+            try:
+                self.tip.destroy()
+            except tk.TclError:
+                pass
+            self.tip = None
+
+
 class App:
     def __init__(self, root: tk.Tk, pdf: str | None = None, toc: str | None = None) -> None:
         self.root = root
@@ -130,6 +194,8 @@ class App:
         st.configure("TCombobox", padding=3)
         st.configure("Sep.TFrame", background=BORDER)
         st.configure("Link.TLabel", foreground=ACCENT, font=(FONT_FAMILY, 9, "underline"))
+        st.configure("LinkFocus.TLabel", foreground=ACCENT_DARK, background=ACCENT_SOFT,
+                     font=(FONT_FAMILY, 9, "underline"))
 
     def _section(self, row: int, number: str, title: str, hint: str = "", grow: bool = False) -> ttk.Frame:
         """번호 배지 + 제목 헤더가 붙은 섹션을 만들고 본문 프레임을 돌려준다."""
@@ -263,10 +329,17 @@ class App:
         site.grid(row=2, column=0, columnspan=2, sticky="w", pady=(10, 0))
         ttk.Checkbutton(site, text=tr("opt_update_check"), variable=self.var_update_check,
                         command=self._on_update_toggle).pack(side="left")
-        # 「의견 보내기」: 툴 페이지의 의견 칸을 브라우저로 열기만 하는 작은 링크
-        self.feedback_link = ttk.Label(site, text=tr("btn_feedback"), style="Link.TLabel", cursor="hand2")
-        self.feedback_link.pack(side="left", padx=(18, 0))
-        self.feedback_link.bind("<Button-1>", lambda _e: self.open_feedback())
+        # 「의견 보내기」: 툴 페이지의 의견 칸을 브라우저로 열기만 하는 작은 링크.
+        # Tab 으로 초점을 받고(초점이 오면 바탕색으로 보인다) Enter·Space 로도 누른다.
+        link = ttk.Label(site, text=tr("btn_feedback"), style="Link.TLabel", cursor="hand2", takefocus=True)
+        link.pack(side="left", padx=(18, 0))
+        link.bind("<Button-1>", lambda _e: self.open_feedback())
+        for key in ("<Return>", "<KP_Enter>", "<space>"):
+            link.bind(key, lambda _e: self.open_feedback() or "break")
+        link.bind("<FocusIn>", lambda _e: link.configure(style="LinkFocus.TLabel"))
+        link.bind("<FocusOut>", lambda _e: link.configure(style="Link.TLabel"))
+        self.feedback_link = link
+        self.feedback_tip = Tooltip(link, tr("feedback_tip"), FONT_SMALL)
 
         btns = ttk.Frame(body)
         btns.grid(row=3, column=0, columnspan=2, sticky="e", pady=(10, 4))
@@ -525,7 +598,7 @@ class App:
 
     def _update_open(self) -> None:
         """내려받지 않고 툴 소개 페이지만 연다. 책갈피 주소일 때만.
-        영어·중국어·일본어 화면이면 영어 판 페이지가 있을 때 그쪽을 연다."""
+        한국어가 아닌 화면이면 영어 판 페이지가 있을 때 그쪽을 연다(update_check.is_korean)."""
         import webbrowser
         info = self._update_info
         if info is not None:
