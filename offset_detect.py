@@ -23,9 +23,10 @@ import re
 import threading
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Callable
+from typing import TYPE_CHECKING, Callable
 
-from pypdf import PdfReader
+if TYPE_CHECKING:  # pypdf 는 0.6초 넘게 걸려서 창이 뜬 뒤 실제로 쓸 때 불러온다(detect_offset 안). 여기서는 형 표기용.
+    from pypdf import PdfReader
 
 try:
     from PIL import Image
@@ -468,6 +469,7 @@ def detect_offset(
     ocr: "WindowsOcr | None" = None,
     early_stop: bool = True,
 ) -> OffsetResult:
+    from pypdf import PdfReader  # 늦게 불러오기: 다른 스레드가 불러오는 중이면 import 잠금이 기다려 준다
     reader = pdf if isinstance(pdf, PdfReader) else PdfReader(str(pdf))
     if len(reader.pages) == 0:
         return OffsetResult(offset=None, reason="no_pages")

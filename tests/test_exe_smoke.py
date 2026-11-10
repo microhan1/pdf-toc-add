@@ -57,15 +57,23 @@ def process_tree(root_pid: int) -> set[int]:
     return tree
 
 
+GWL_STYLE = -16
+WS_CAPTION = 0x00C00000
+
+
 def visible_windows(pids: set[int]) -> list[int]:
+    """제목 표시줄(WS_CAPTION)이 있는 보이는 창만. 시작 그림(PyInstaller --splash)은 제목 표시줄 없이 제목이
+    「tk」라서 여기서 걸러진다 — 안 거르면 프로그램 창보다 먼저 잡혀 제목 검사가 틀린다(TrimPDF 에서 겪음)."""
     user32 = ctypes.windll.user32
+    user32.GetWindowLongW.restype = ctypes.c_long
     found: list[int] = []
 
     @ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
     def each(hwnd, _):
         pid = wintypes.DWORD()
         user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
-        if pid.value in pids and user32.IsWindowVisible(hwnd) and user32.GetWindowTextLengthW(hwnd) > 0:
+        if (pid.value in pids and user32.IsWindowVisible(hwnd) and user32.GetWindowTextLengthW(hwnd) > 0
+                and (user32.GetWindowLongW(hwnd, GWL_STYLE) & WS_CAPTION) == WS_CAPTION):
             found.append(hwnd)
         return True
 

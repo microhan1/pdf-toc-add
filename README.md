@@ -74,7 +74,7 @@ python pdf_toc_add.py 책.pdf 목차.txt [--offset 8 | --auto-offset] [-o 결과
 ```bash
 pip install -r requirements.txt pytest pyinstaller
 python -m pytest tests -q
-python -m PyInstaller --onefile --windowed --name pdf_toc_add pdf_toc_add.py
+python -m PyInstaller --onefile --windowed --name pdf_toc_add --splash assets/splash.png pdf_toc_add.py
 ```
 
 빌드된 exe 는 저장소에 넣지 않고 GitHub Releases 에 올립니다.
@@ -153,7 +153,7 @@ Tell us what's broken or missing with **Send feedback** in section 3 of the wind
 ```bash
 pip install -r requirements.txt pytest pyinstaller
 python -m pytest tests -q
-python -m PyInstaller --onefile --windowed --name pdf_toc_add pdf_toc_add.py
+python -m PyInstaller --onefile --windowed --name pdf_toc_add --splash assets/splash.png pdf_toc_add.py
 ```
 
 All strings live in [i18n.py](i18n.py). To add a language, add a table to `STRINGS` and register it in `LANGS` and `LANG_NAMES`.
@@ -228,7 +228,7 @@ python pdf_toc_add.py book.pdf toc.txt [--offset 8 | --auto-offset] [-o out.pdf]
 ```bash
 pip install -r requirements.txt pytest pyinstaller
 python -m pytest tests -q
-python -m PyInstaller --onefile --windowed --name pdf_toc_add pdf_toc_add.py
+python -m PyInstaller --onefile --windowed --name pdf_toc_add --splash assets/splash.png pdf_toc_add.py
 ```
 
 所有字符串都在 [i18n.py](i18n.py) 中。要新增语言，在 `STRINGS` 中添加一张表，并在 `LANGS` 和 `LANG_NAMES` 中登记即可。
@@ -303,7 +303,7 @@ python pdf_toc_add.py book.pdf toc.txt [--offset 8 | --auto-offset] [-o out.pdf]
 ```bash
 pip install -r requirements.txt pytest pyinstaller
 python -m pytest tests -q
-python -m PyInstaller --onefile --windowed --name pdf_toc_add pdf_toc_add.py
+python -m PyInstaller --onefile --windowed --name pdf_toc_add --splash assets/splash.png pdf_toc_add.py
 ```
 
 文字列はすべて [i18n.py](i18n.py) にまとまっています。言語を増やすには `STRINGS` に表を一つ足し、`LANGS` と `LANG_NAMES` に登録します。

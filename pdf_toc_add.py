@@ -12,15 +12,68 @@ import argparse
 import os
 import re
 import sys
+import threading
 from dataclasses import dataclass, field
 from pathlib import Path
 
-try:
-    from pypdf import PdfReader, PdfWriter
-except ImportError:  # pragma: no cover
-    sys.exit("pypdf is required:  pip install pypdf")
-
 from i18n import LANGS, set_lang, tr
+
+
+# ---------------------------------------------------------------- pypdf 늦게 불러오기
+# pypdf 는 불러오는 데 0.6초 넘게 걸려서(cryptography 까지 딸려 온다) 창이 뜬 뒤로 미룬다.
+# TrimPDF(0fbec7c)의 _Deferred·load_heavy·preload_heavy·close_splash 방식을 그대로 쓴다.
+
+class _Deferred:
+    """PdfReader·PdfWriter 자리에 먼저 놓는 대역. 처음 부르거나 속성을 읽는 순간 load_heavy() 로 진짜 클래스를 불러온다."""
+
+    def __init__(self, name: str) -> None:
+        self._name = name
+
+    def __getattr__(self, attr):
+        load_heavy()
+        return getattr(globals()[self._name], attr)
+
+    def __call__(self, *args, **kwargs):
+        load_heavy()
+        return globals()[self._name](*args, **kwargs)
+
+
+PdfReader = _Deferred("PdfReader")
+PdfWriter = _Deferred("PdfWriter")
+_heavy_lock = threading.Lock()
+_heavy_loaded = False
+
+
+def load_heavy() -> None:
+    """pypdf 를 불러와 전역 이름 PdfReader·PdfWriter 를 진짜 클래스로 바꾼다.
+    다른 스레드가 불러오는 중이면 끝날 때까지 기다린다. pypdf 가 없으면 예전처럼 안내하고 끝낸다."""
+    global PdfReader, PdfWriter, _heavy_loaded
+    if _heavy_loaded:
+        return
+    with _heavy_lock:
+        if not _heavy_loaded:
+            try:
+                from pypdf import PdfReader, PdfWriter
+            except ImportError:  # pragma: no cover
+                sys.exit("pypdf is required:  pip install pypdf")
+            _heavy_loaded = True
+
+
+def preload_heavy() -> None:
+    """창이 뜬 직후 배경 스레드에서 미리 불러 둔다. 실패해도 여기서는 넘어가고, 실제로 쓸 때 다시 시도해 오류를 보여 준다."""
+    try:
+        load_heavy()
+    except BaseException:  # sys.exit 의 SystemExit 도 배경 스레드에서는 삼킨다
+        pass
+
+
+def close_splash() -> None:
+    """exe 로 켤 때 보이던 시작 그림(PyInstaller --splash)을 닫는다. 파이썬으로 바로 돌릴 때는 pyi_splash 가 없어 아무 일도 하지 않는다."""
+    try:
+        import pyi_splash
+        pyi_splash.close()
+    except Exception:
+        pass
 
 
 # ---------------------------------------------------------------- 오류 타입
@@ -372,6 +425,7 @@ def open_pdf(path: Path) -> PdfReader:
     if b"%PDF" not in head:
         raise PdfError(tr("pdf_not_pdf", name=path.name))
     try:
+        load_heavy()                    # 창이 뜨자마자 파일을 받았으면 배경 불러오기가 끝날 때까지 여기서 기다린다
         reader = PdfReader(str(path))
     except Exception as exc:
         raise PdfError(tr("pdf_corrupt", name=path.name, err=exc)) from exc
@@ -480,6 +534,7 @@ def main(argv: list[str] | None = None) -> int:
         toc = next((f for f in files if not f.lower().endswith(".pdf")), None)
         return gui_main(pdf, toc)
 
+    close_splash()  # 콘솔에서 CLI 로 쓸 때 시작 그림이 남지 않게
     ap = argparse.ArgumentParser(
         description=tr("cli_desc"),
         formatter_class=argparse.RawDescriptionHelpFormatter,

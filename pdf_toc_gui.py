@@ -821,8 +821,13 @@ class App:
 
 
 def run(pdf: str | None = None, toc: str | None = None) -> int:
-    root = TkinterDnD.Tk() if _DND else tk.Tk()
-    App(root, pdf, toc)
+    try:
+        root = TkinterDnD.Tk() if _DND else tk.Tk()
+        App(root, pdf, toc)
+        root.update()               # 창을 다 그린 뒤에 시작 그림을 닫는다
+    finally:
+        core.close_splash()         # 창을 만들다 실패해도 오류 안내가 시작 그림에 가리지 않게 닫는다
+    threading.Thread(target=core.preload_heavy, daemon=True).start()  # pypdf 는 창이 뜬 뒤 배경에서
     root.mainloop()
     return 0
 
